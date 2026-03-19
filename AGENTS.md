@@ -74,3 +74,7 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - [ ] Run `vp install` after pulling remote changes and before getting started.
 - [ ] Run `vp check` and `vp test` to validate changes.
 <!--VITE PLUS END-->
+
+## Project Conventions
+
+- **README files**: English and Chinese documentation must be in separate files — `README.md` (English) and `README.zh-CN.md` (Chinese). Do not combine them in one file.

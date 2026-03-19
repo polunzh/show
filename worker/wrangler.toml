@@ -3,7 +3,7 @@ main = "src/index.ts"
 compatibility_date = "2026-03-19"
 
 [vars]
-BASE_DOMAIN = "show.example.com"
+BASE_DOMAIN = "127.dev"
 
 [[r2_buckets]]
 binding = "SHOW_FILES"
@@ -11,7 +11,7 @@ bucket_name = "show-files"
 
 [[kv_namespaces]]
 binding = "SHOW_META"
-id = "PLACEHOLDER_KV_ID"
+id = "933acd16aebe4b5fae7695dfce3eabed"
 
 [triggers]
 crons = ["0 * * * *"]
