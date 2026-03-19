@@ -2,8 +2,6 @@
 
 Temporary static hosting for AI Agents. Deploy a static site with one command, get a public preview URL, auto-expire after 48 hours.
 
-Built entirely on Cloudflare's free tier (Workers + R2 + KV).
-
 [中文文档](./README.zh-CN.md)
 
 ## Quick Start
@@ -13,7 +11,7 @@ Built entirely on Cloudflare's free tier (Workers + R2 + KV).
 show deploy ./dist --name my-project
 
 # Output:
-# Live at: https://a3f9x2-my-project.show.example.com
+# Live at: https://a3f9x2-my-project.127.dev
 # Expires: 2026-03-21 15:30 UTC (48h)
 ```
 
@@ -23,24 +21,8 @@ show deploy ./dist --name my-project
 - **48-hour auto-expiry** — deployments clean up automatically
 - **SPA support** — `--mode spa` enables client-side routing fallback
 - **Deploy token auth** — instance-level protection, not anonymous
-- **Self-hostable** — one-command setup on your own Cloudflare account
 - **Agent-friendly** — JSON output mode for Claude Code, Codex, OpenCode, etc.
 - **Zero cost** — runs within Cloudflare free tier limits
-
-## Architecture
-
-```
-AI Agent / Terminal
-      │
-      ▼  show deploy ./dist
-Cloudflare Worker
-  ├── R2 Bucket (file storage)
-  ├── KV Namespace (metadata)
-  └── Cron Trigger (hourly cleanup)
-      │
-      ▼
-https://{id}-{name}.show.example.com
-```
 
 ## Commands
 
@@ -61,29 +43,6 @@ show inspect <deployment-id-or-url>
 show deploy ./dist --name my-project --json
 ```
 
-## Self-Hosting Setup
-
-Prerequisites: Node.js 22+, a Cloudflare account with a domain.
-
-```bash
-# Clone and install
-git clone https://github.com/polunzh/show.git
-cd show
-vp install
-
-# Run interactive setup
-node scripts/setup.mjs
-```
-
-The setup script will:
-
-1. Create R2 bucket and KV namespace
-2. Generate a deploy token
-3. Deploy the Worker
-4. Write local config to `~/.show/config.json`
-
-You'll need to manually add a wildcard DNS record (`*.show.yourdomain.com`) pointing to your Worker.
-
 ## Limits
 
 | Constraint               | Value                                              |
@@ -93,30 +52,22 @@ You'll need to manually add a wildcard DNS record (`*.show.yourdomain.com`) poin
 | Deployment lifetime      | 48 hours                                           |
 | Supported file types     | HTML, CSS, JS, JSON, images, fonts, SVG, XML, etc. |
 
-## Project Structure
-
-```
-show/
-├── worker/src/       # Cloudflare Worker
-├── scripts/show.mjs  # Local CLI client
-├── scripts/setup.mjs # One-time setup
-├── skills/           # AI Agent skill definitions
-├── docs/             # Design spec, review, implementation plan
-└── src/              # Landing page
-```
-
 ## Configuration
 
 The client reads config from `~/.show/config.json`:
 
 ```json
 {
-  "apiUrl": "https://show.example.com",
+  "apiUrl": "https://your-show-instance.example.com",
   "token": "your-deploy-token"
 }
 ```
 
 Or via environment variables: `SHOW_API_URL` and `SHOW_TOKEN`.
+
+## Self-Hosting
+
+Show is open source and designed to run on your own Cloudflare account at zero cost. See [Self-Hosting Guide](./docs/self-hosting.md) for setup instructions.
 
 ## Development
 
