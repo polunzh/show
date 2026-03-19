@@ -1,0 +1,17 @@
+name = "show-api"
+main = "src/index.ts"
+compatibility_date = "2026-03-19"
+
+[vars]
+BASE_DOMAIN = "show.example.com"
+
+[[r2_buckets]]
+binding = "SHOW_FILES"
+bucket_name = "show-files"
+
+[[kv_namespaces]]
+binding = "SHOW_META"
+id = "PLACEHOLDER_KV_ID"
+
+[triggers]
+crons = ["0 * * * *"]

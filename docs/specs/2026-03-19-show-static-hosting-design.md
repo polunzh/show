@@ -1,101 +1,323 @@
-# Show — Lightweight Static Hosting Platform
+# Show — Temporary Static Hosting for AI Agents
 
 **Date:** 2026-03-19
 **Status:** Draft
 
 ## Overview
 
-Show is a lightweight, self-hostable static website hosting platform built entirely on Cloudflare's free tier. Users deploy static sites via AI Agent skills (Claude Code, Codex, OpenCode, etc.), and each deployment gets a unique subdomain URL that expires after 48 hours.
+Show is a lightweight, self-hostable platform for publishing temporary static site previews from AI Agent workflows.
+
+The MVP is intentionally narrow:
+
+- Deploy a local static directory with one shell command.
+- Return a public preview URL on a subdomain of the instance owner's domain.
+- Expire each deployment after 48 hours.
+- Let the deployer see what they have deployed from the current machine.
+- Give humans enough diagnostics to understand failures.
+
+Show is not trying to be a general-purpose hosting platform in MVP. It is a temporary preview tool.
+
+---
+
+## Product Contract (MVP)
+
+The MVP makes these promises:
+
+1. A deployer can run `show deploy ./dist` and receive a preview URL.
+2. Uploads are protected by an instance-level deploy token. Anonymous public upload is not supported.
+3. Each deployment gets a unique subdomain URL:
+
+```text
+{random-id}-{slug}.show.example.com
+```
+
+4. Deployments expire 48 hours after creation.
+5. A deployer can view local deployment history from the same machine via `show list`.
+6. A deployer can inspect deployment status and failure reason via `show inspect <url|deployment-id>`.
+7. The platform supports:
+   - static multi-page sites
+   - SPA fallback when deployment mode is explicitly set to `spa`
+
+The MVP does not promise:
+
+- cross-device deployment history
+- remote multi-user management
+- custom domains per deployment
+- generic `workers.dev` path-based fallback compatibility
+
+---
 
 ## Goals
 
-- Deploy static sites with a single shell command, callable from any AI Agent
-- Zero cost — runs entirely within Cloudflare free tier limits
-- Easy to self-host — one-command setup for open source users
-- Secure by default with multiple protection layers
+- One-command deployment for AI Agent workflows
+- Zero-to-low operational burden for self-hosting
+- Safe-by-default upload model for a single self-hosted instance
+- Predictable expiration behavior
+- Minimal human-operable diagnostics
 
 ## Non-Goals (MVP)
 
-- User authentication (planned for later)
-- Custom domain support (planned for later)
-- Persistent hosting (all deployments expire)
-- Web UI for uploading
+- Anonymous uploads
+- User accounts
+- Web dashboard
+- Cross-device sync
+- Per-user permissions
+- Billing and quotas
+- Real-time analytics
+- Advanced CDN tuning
+- Custom domain binding for each deployment
+- Generic support for arbitrary path-based hosting on `workers.dev`
 
 ---
 
 ## Architecture
 
-```
-AI Agent (Claude Code / Codex / OpenCode)
-       │
-       ▼  shell: show-deploy ./dist --name my-project
-  show-deploy.sh
-       │
-       ▼  POST /upload (tar.gz + name)
- Cloudflare Worker (show-api)
-  ├── POST /upload    ← receive and unpack static files
-  ├── GET  /*         ← wildcard route, serve files by subdomain
-  └── Cron Trigger    ← hourly, clean up expired projects
-       │
-       ├── R2 Bucket (show-files)
-       │    └── {project-id}/index.html
-       │    └── {project-id}/style.css
-       │    └── {project-id}/...
-       │
-       └── KV Namespace (show-meta)
-            └── key: {project-id}
-            └── value: { name, createdAt, expiresAt, fileCount, totalSize }
-```
-
-### URL Format
-
-```
-{random-id}-{project-name}.show.yourdomain.com
+```text
+AI Agent / Human
+      │
+      ▼  shell: show deploy ./dist --name my-project
+ local shell client (`show`)
+      │
+      ├── stores local history in ~/.show/deployments.json
+      │
+      ▼  POST /upload
+Cloudflare Worker (show-api)
+  ├── POST /upload                     protected by deploy token
+  ├── GET  /*                          serve deployment by subdomain
+  ├── GET  /_admin/deployments/:id     protected inspect endpoint
+  └── Cron Trigger                     expire and clean old deployments
+      │
+      ├── R2 Bucket (show-files)
+      │    └── {deployment-id}/index.html
+      │    └── {deployment-id}/assets/app.js
+      │    └── ...
+      │
+      └── KV Namespace (show-meta)
+           └── key: {deployment-id}
+           └── value: deployment metadata + state + file manifest
 ```
 
-Example: `a3f9x2-my-project.show.example.com`
+### Required Modules
 
-The random ID prefix prevents enumeration of deployed sites.
+The MVP requires these modules and no more:
+
+1. Upload Admission Module
+2. Deployment State Module
+3. Deployment History Module
+4. Observability Module
+
+Everything else stays out of scope.
 
 ---
 
-## Deployment Method — Agent Skill
+## URL Model
 
-No standalone CLI. The deployment script (`show-deploy.sh`) is a simple shell script callable from any AI Agent that can execute bash.
+### Deployment URL
 
-### `show-deploy.sh` (~30 lines)
+```text
+{random-id}-{slug}.show.example.com
+```
 
-1. Pack target directory into tar.gz
-2. Validate size <= 10MB
-3. `curl` POST to Worker API
-4. Output the returned URL and expiration time
+Example:
 
-### Agent Integration
+```text
+a3f9x2-my-project.show.example.com
+```
 
-| Platform | Integration |
-|----------|------------|
-| Claude Code | Skill file (`.claude/skills/show-deploy.md`) with trigger words |
-| Codex | Tool description referencing the shell script |
-| OpenCode | Same pattern, tool/skill description |
+### Hostname Rules
 
-The skill triggers on phrases like "deploy to show", "upload to show".
+- `random-id` is 6 lowercase base36 characters
+- `slug` is lowercase ASCII only
+- allowed characters in `slug`: `a-z`, `0-9`, `-`
+- multiple invalid characters collapse to a single `-`
+- leading and trailing `-` are trimmed
+- empty slug becomes `site`
+- slug length is capped so the full left-most label stays within DNS limits
 
-### Usage
+Example conversions:
+
+| Input         | Slug          |
+| ------------- | ------------- |
+| `My Project`  | `my-project`  |
+| `hello_world` | `hello-world` |
+| `设计稿`      | `site`        |
+
+---
+
+## Local Client
+
+Show uses a thin local Node.js script named `show`. It is still a script-level tool, not a compiled product CLI.
+
+This is an intentional choice:
+
+- `show deploy` needs archive creation and HTTP upload
+- `show list` needs local JSON parsing
+- `show inspect` needs HTTP requests and structured output
+
+Doing this in pure shell would add avoidable complexity and external dependencies like `jq`.
+
+### Commands
 
 ```bash
-# Deploy a directory
-show-deploy ./dist
-
-# Deploy with a custom project name
-show-deploy ./dist --name my-project
+show deploy ./dist
+show deploy ./dist --name my-project
+show deploy ./dist --name my-spa --mode spa
+show list
+show inspect https://a3f9x2-my-project.show.example.com
 ```
 
-### Output
+### Command Responsibilities
 
+#### `show deploy`
+
+1. Read deploy token and API base URL from local config
+2. Build a tar.gz archive from the target directory
+3. Validate archive size before upload
+4. POST to `/upload`
+5. Save a local history entry
+6. Print both human-readable and JSON output
+
+#### `show list`
+
+Reads `~/.show/deployments.json` and prints local deployment history grouped into:
+
+- active
+- expired
+
+This is local-machine history only. It is not a remote control plane.
+
+`show list` does not query the server. It is a pure local read.
+
+If a local history entry is malformed, it may be shown with an inline warning, but that is not treated as a third lifecycle bucket.
+
+#### `show inspect`
+
+1. Accept a deployment URL or deployment ID
+2. Resolve deployment ID
+3. Call the protected inspect endpoint
+4. Show current status, expiration, mode, and last known failure reason
+
+### Local History File
+
+Path:
+
+```text
+~/.show/deployments.json
 ```
-Live at: https://a3f9x2-my-project.show.example.com
-Expires: 2026-03-21 15:30 UTC (48h)
+
+Each entry stores:
+
+```json
+{
+  "deploymentId": "a3f9x2-my-project",
+  "url": "https://a3f9x2-my-project.show.example.com",
+  "createdAt": "2026-03-19T15:30:00Z",
+  "expiresAt": "2026-03-21T15:30:00Z",
+  "sourcePath": "/Users/alice/project/dist",
+  "deploymentName": "my-project",
+  "mode": "static"
+}
 ```
+
+---
+
+## Upload Admission Module
+
+Uploads are protected by an instance-level deploy token.
+
+### Why
+
+This is the minimum safe boundary for MVP:
+
+- prevents anonymous public uploads
+- reduces abuse risk
+- gives the instance owner a basic control point
+
+### MVP Design
+
+- setup generates a random deploy token
+- token is stored in Worker secret config
+- local `show` client stores the same token in local config
+- `POST /upload` requires `Authorization: Bearer <deploy-token>`
+
+This is not user auth. It is instance admission control.
+
+---
+
+## Agent Integration
+
+AI Agent integration is not part of the runtime core, but it is part of the developer workflow.
+
+### MVP approach
+
+- the source of truth is the local `show` command
+- Claude Code / Codex / other agents integrate by wrapping that command
+- wrapper files live under `skills/` or equivalent integration docs
+
+This keeps the hosting runtime small while still making agent usage first-class.
+
+### Layering Rule
+
+The layering is:
+
+```text
+Agent skill / tool wrapper
+        ↓
+local `show` command
+        ↓
+Show Worker API
+```
+
+That means:
+
+- `show` is the product interface
+- `skill` is an adapter for a specific AI Agent environment
+- product logic must not live only inside a skill file
+
+This allows:
+
+- humans to run `show` directly
+- multiple AI Agents to share the same local interface
+- future agent integrations without rewriting deployment logic
+
+---
+
+## Deployment State Module
+
+Each deployment has an explicit lifecycle state.
+
+### States
+
+- `uploading`
+- `ready`
+- `failed`
+- `expired`
+
+### Why
+
+Without explicit state, partial failures leave orphan files and cleanup has no reliable basis.
+
+### State Rules
+
+- `uploading`: metadata exists, validation passed, file writes are in progress
+- `ready`: all files written successfully and deployment is publicly servable
+- `failed`: upload did not complete; deployment must not be served
+- `expired`: deployment reached TTL and should not be served
+
+### State Transition
+
+```text
+new -> uploading -> ready -> expired
+                  -> failed
+```
+
+### Cleanup Rule
+
+Cron deletes:
+
+- expired deployments
+- failed deployments older than a short grace period
+- stuck `uploading` deployments older than a timeout
 
 ---
 
@@ -103,46 +325,132 @@ Expires: 2026-03-21 15:30 UTC (48h)
 
 ### `POST /upload`
 
-```
+Protected upload endpoint.
+
+#### Request
+
+```text
+Authorization: Bearer <deploy-token>
 Content-Type: multipart/form-data
 Body:
   - file: tar.gz archive
-  - name: project name (optional)
+  - name: optional deployment name
+  - mode: optional, one of static | spa
 ```
 
-**Processing flow:**
+#### Validation
 
-1. Validate `Content-Length` <= 10MB
-2. Decompress tar.gz with a lightweight streaming tar library compatible with Workers runtime (128MB memory limit, no native tar support):
-   - Total uncompressed size <= 10MB
-   - File count <= 100
-   - File types on whitelist only
-   - No path traversal (`..` or absolute paths)
-3. Generate project ID: `{6-char-random}-{name || dir-name}`
-4. Write files to R2 in parallel (`Promise.all`)
-5. Write metadata to KV
-6. Return JSON response:
+Before writing anything:
+
+1. Validate auth token
+2. Validate `Content-Length <= 10MB`
+3. Decompress and validate archive in memory/streaming mode
+4. Validate:
+   - total uncompressed size <= 10MB
+   - file count <= 100
+   - path traversal is rejected
+   - filenames are normalized
+   - file types are in the whitelist
+5. Build the complete file manifest
+
+#### Upload Flow
+
+1. Generate `deploymentId`
+2. Compute `expiresAt = createdAt + 48h`
+3. Write KV metadata with:
+   - `status = uploading`
+   - manifest
+   - mode
+   - timestamps
+4. Write files to R2 with bounded concurrency
+5. Update metadata to `status = ready`
+6. Return structured response
+
+If file writes fail after metadata creation:
+
+- update metadata to `status = failed`
+- store `lastError`
+- let Cron clean up remaining files
+
+#### Success Response
 
 ```json
 {
+  "deploymentId": "a3f9x2-my-project",
   "url": "https://a3f9x2-my-project.show.example.com",
-  "expiresAt": "2026-03-21T15:30:00Z"
+  "createdAt": "2026-03-19T15:30:00Z",
+  "expiresAt": "2026-03-21T15:30:00Z",
+  "mode": "static",
+  "requestId": "req_01HXYZ..."
 }
 ```
 
-### `GET /*` (wildcard route on `*.show.yourdomain.com`)
+### `GET /*`
 
-1. Extract project ID from `Host` header
-2. Check KV for project existence and expiration
-3. Map URL path to R2 key (`/` defaults to `index.html`)
-4. Read file from R2, set correct `Content-Type` and security headers
-5. Return file with cache headers, or 404 if not found / expired
+Serves deployment files by subdomain.
 
-### Cron Trigger (hourly)
+#### Request Resolution
 
-1. List all projects in KV using cursor-based pagination (KV `list()` returns max 1000 keys per call)
-2. Find projects where `expiresAt < now`
-3. Delete corresponding R2 files and KV records
+1. Read deployment ID from `Host`
+2. Load metadata from KV
+3. Reject if:
+   - metadata missing
+   - status is not `ready`
+   - `expiresAt <= now`
+4. Resolve request path:
+   - `/` -> `index.html`
+   - normal file paths map directly
+   - if mode is `spa` and the file does not exist, serve `index.html`
+5. Read file from R2
+6. Return with content type and cache headers
+
+### `GET /_admin/deployments/:id`
+
+Protected inspect endpoint.
+
+#### Why it exists
+
+Humans need a minimal diagnostic entry point that is better than guessing from `404` and `500`.
+
+#### Protection
+
+Requires the same deploy token as upload.
+
+#### Response
+
+```json
+{
+  "deploymentId": "a3f9x2-my-project",
+  "status": "failed",
+  "mode": "spa",
+  "createdAt": "2026-03-19T15:30:00Z",
+  "expiresAt": "2026-03-21T15:30:00Z",
+  "fileCount": 12,
+  "totalSize": 847000,
+  "lastError": {
+    "code": "R2_WRITE_FAILED",
+    "message": "Failed while writing assets/app.js"
+  },
+  "requestId": "req_01HXYZ..."
+}
+```
+
+### Cron Trigger
+
+Runs hourly.
+
+For each deployment:
+
+- if `status = ready` and `expiresAt < now`, mark `expired` and delete files
+- if `status = failed` and older than grace period, delete files and metadata
+- if `status = uploading` and older than timeout, mark `failed` and delete files
+
+KV listing must use cursor-based pagination until exhausted.
+
+MVP note:
+
+- active deployments are expected to stay well below 1000
+- pagination is still required for correctness
 
 ---
 
@@ -150,201 +458,312 @@ Body:
 
 ### R2 Bucket: `show-files`
 
-```
+```text
 a3f9x2-my-project/index.html
 a3f9x2-my-project/style.css
 a3f9x2-my-project/assets/logo.png
-b7k1m4-demo/index.html
 ```
 
 ### KV Namespace: `show-meta`
 
-```
-Key:   a3f9x2-my-project
-Value: {
-  "name": "my-project",
-  "projectId": "a3f9x2-my-project",
+```json
+{
+  "deploymentId": "a3f9x2-my-project",
+  "slug": "my-project",
+  "status": "ready",
+  "mode": "static",
   "createdAt": "2026-03-19T15:30:00Z",
   "expiresAt": "2026-03-21T15:30:00Z",
   "fileCount": 12,
-  "totalSize": 847000
+  "totalSize": 847000,
+  "files": ["index.html", "style.css", "assets/logo.png"],
+  "lastError": null,
+  "lastRequestId": "req_01HXYZ..."
 }
 ```
 
-### Usage Counters (KV)
+### Why store the manifest in KV
 
+For MVP, the manifest is small enough to store directly in metadata because:
+
+- max 100 files
+- cleanup needs exact file names
+- this avoids adding another manifest storage layer
+
+---
+
+## File Type Support
+
+MVP whitelist:
+
+- `.html`
+- `.css`
+- `.js`
+- `.mjs`
+- `.json`
+- `.map`
+- `.txt`
+- `.xml`
+- `.svg`
+- `.png`
+- `.jpg`
+- `.jpeg`
+- `.gif`
+- `.webp`
+- `.avif`
+- `.ico`
+- `.woff`
+- `.woff2`
+- `.ttf`
+- `.otf`
+- `.webmanifest`
+
+Not supported in MVP:
+
+- server-side runtimes
+- arbitrary executable binaries
+- uploads that require backend behavior
+
+`.wasm` may be added later if real demand appears.
+
+---
+
+## Caching and Expiration
+
+The cache strategy must not break the 48-hour expiration contract.
+
+### Rules
+
+- responses are cacheable
+- cache TTL is capped by remaining time until `expiresAt`
+- Worker must never emit cache headers that let content stay cached beyond expiration
+
+### MVP Header Strategy
+
+For each served file:
+
+```text
+Cache-Control: public, max-age={min(300, secondsUntilExpiry)}
+X-Content-Type-Options: nosniff
 ```
-Key:   _usage:daily:2026-03-19
-Value: { "uploads": 15, "r2Writes": 150 }
 
-Key:   _usage:monthly:2026-03
-Value: { "r2StorageBytes": 8500000, "totalProjects": 42 }
-```
+This keeps caching useful while preserving predictable expiration behavior.
+
+Long-lived 48-hour edge caching is explicitly out of scope for MVP because it conflicts with strict expiration.
 
 ---
 
-## Security
+## Observability Module
 
-### Upload Validation (Worker)
+Show must be diagnosable by humans, not only by AI Agents.
 
-1. **Request size limit** — reject requests > 10MB before unpacking
-2. **Decompression bomb protection** — stream-count cumulative size, abort if > 10MB
-3. **File count limit** — max 100 files per project
-4. **File type whitelist** — `.html`, `.css`, `.js`, `.json`, `.svg`, `.png`, `.jpg`, `.gif`, `.webp`, `.ico`, `.woff`, `.woff2`, `.txt`, `.xml`
-5. **Path traversal protection** — reject entries containing `..` or absolute paths
+### Minimum Observability
 
-### Response Security (Worker)
+Every meaningful operation gets a `requestId`.
 
-- `Content-Type` set strictly by file extension
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
+Structured Worker log events:
 
-### Platform Level (Cloudflare free)
+- `upload_received`
+- `upload_rejected`
+- `upload_completed`
+- `upload_failed`
+- `serve_hit`
+- `serve_miss`
+- `serve_expired`
+- `cleanup_deleted`
+- `cleanup_failed`
 
-- Rate limiting rules (e.g., 10 uploads/min per IP)
-- DDoS protection (built-in)
+### Human Diagnostics
 
----
+- API error responses include `requestId`
+- metadata stores `lastError` and `lastRequestId`
+- `show inspect` exposes current deployment state
 
-## Cost Control — Multi-Layer Protection
+### Explicit Non-Goal
 
-### Layer 1: Cloudflare Free Tier Guarantee
+No external log pipeline or analytics backend in MVP.
 
-Cloudflare free plans do not auto-upgrade to paid billing. Exceeding limits returns errors, not invoices. Critical: do not enable any paid plan or usage-based billing.
-
-### Layer 2: Worker Usage Tracking & Circuit Breaker
-
-Thresholds set at 70% of free tier limits:
-
-| Metric | Free Limit | Breaker Threshold | Action |
-|--------|-----------|-------------------|--------|
-| Daily uploads | - | 50 | Reject new uploads |
-| KV daily writes | 1,000 | 700 | Reject new uploads |
-| R2 total storage | 10 GB | 7 GB | Reject new uploads |
-| Worker daily requests | 100,000 | 70,000 | Return static 429 page |
-
-### Layer 3: CDN Caching
-
-All static file responses include `Cache-Control: public, max-age=172800`. Cached requests hit Cloudflare edge nodes and consume zero Worker/R2 quota. This is the most effective cost reduction mechanism.
-
-### Layer 4: Dashboard Alerts
-
-Configure Cloudflare usage email notifications at 50% and 80% thresholds.
-
----
-
-## Performance
-
-### MVP (do these)
-
-1. **Cache-Control headers** — `public, max-age=172800` on all static responses; Cloudflare CDN caches at 300+ edge nodes worldwide
-2. **Parallel R2 writes** — `Promise.all` when writing files during upload
-
-### Future (when needed)
-
-- **KV metadata caching** — use Cache API via `waitUntil` to avoid KV reads on every request
-- **ETag / 304 support** — conditional requests to save bandwidth
-- **Compression** — Cloudflare auto gzip/brotli for text resources (free, enabled by default)
+Cloudflare's built-in Worker logs are enough for first release.
 
 ---
 
 ## Error Handling
 
-| Scenario | Response |
-|----------|----------|
-| Upload > 10MB | `413` — "File size exceeds 10MB limit" |
-| Invalid file types found | `400` — lists rejected files |
-| Path traversal detected | `400` — rejects entire upload |
-| File count > 100 | `400` — "File count exceeds 100 limit" |
-| Corrupted tar.gz | `400` — "Unable to decompress file" |
-| Expired project accessed | `404` — "This project has expired" |
-| Non-existent project | `404` — "Project not found" |
-| Usage breaker triggered | `429` — "Service busy, please try again later" |
-| R2/KV write failure | `500` — best-effort cleanup of partial writes |
+### Upload Errors
+
+| Scenario                | Response |
+| ----------------------- | -------- |
+| Missing / invalid token | `401`    |
+| Upload > 10MB           | `413`    |
+| Invalid file types      | `400`    |
+| Path traversal detected | `400`    |
+| File count > 100        | `400`    |
+| Corrupted tar.gz        | `400`    |
+| Metadata write failure  | `500`    |
+| R2 write failure        | `500`    |
+
+All upload errors return:
+
+- error code
+- human-readable message
+- `requestId`
+
+### Serve Errors
+
+| Scenario              | Response |
+| --------------------- | -------- |
+| Deployment not found  | `404`    |
+| Deployment expired    | `404`    |
+| Deployment not ready  | `404`    |
+| File not found        | `404`    |
+| Worker internal error | `500`    |
+
+### Error Pages
+
+MVP should use simple branded text/html error pages for:
+
+- expired deployment
+- missing deployment
+- service unavailable
+
+The goal is clarity, not a dashboard.
+
+---
+
+## Cost Control
+
+MVP cost control is deliberately simple.
+
+### Hard Limits
+
+- upload token required
+- max upload size = 10MB compressed
+- max extracted size = 10MB
+- max file count = 100
+- 48-hour expiration
+
+### Platform Controls
+
+- Cloudflare rate limiting for `/upload`
+- Cloudflare dashboard usage alerts
+- Cloudflare free tier only
+
+### Explicitly Not in MVP
+
+- strong in-Worker quota accounting
+- per-user usage limits
+- automated billing logic
+- KV-based circuit breakers used as hard admission control
+
+These can be added only after there is real traffic and real operating data.
+
+---
+
+## Self-Hosting
+
+### Setup Goal
+
+A self-hosting user should be able to create one working instance with:
+
+- one Cloudflare zone
+- one Worker
+- one KV namespace
+- one R2 bucket
+- one deploy token
+
+### One-Command Setup
+
+```bash
+vp dlx create-show
+```
+
+The setup flow:
+
+1. Prompt for Cloudflare API token
+2. Prompt for domain name
+3. Create R2 bucket
+4. Create KV namespace
+5. Generate deploy token
+6. Configure Worker secrets and bindings
+7. Configure Worker route for `*.show.example.com/*`
+8. Deploy Worker
+9. Write local client config
+
+### Local Client Runtime
+
+The generated `show` command is a small Node.js script wrapper.
+
+MVP assumptions:
+
+- Node.js is already required for local development in this repo
+- the client should not depend on `bash + curl + jq`
+- the setup flow can write a local executable shim that invokes the Node.js script
+
+### Important Limitation
+
+MVP requires subdomain-based hosting on a real domain.
+
+Path-based fallback on `workers.dev` is not part of MVP because it breaks too many static sites with root-relative asset paths.
 
 ---
 
 ## Project Structure
 
-```
+```text
 show/
-├── worker/                    # Cloudflare Worker
+├── package.json                 # root package manages app + worker dependencies in MVP
+├── worker/
 │   ├── src/
-│   │   ├── index.ts           # Entry, route dispatch
-│   │   ├── upload.ts          # Upload handling (unpack, validate, write R2/KV)
-│   │   ├── serve.ts           # Static file serving (read from R2)
-│   │   ├── cleanup.ts         # Cron expiration cleanup
-│   │   ├── usage.ts           # Usage tracking & circuit breaker
-│   │   └── constants.ts       # Thresholds, whitelist config
-│   ├── wrangler.toml          # Worker config (R2, KV bindings, Cron)
-│   └── package.json
+│   │   ├── index.ts
+│   │   ├── upload.ts
+│   │   ├── serve.ts
+│   │   ├── inspect.ts
+│   │   ├── cleanup.ts
+│   │   ├── auth.ts
+│   │   ├── metadata.ts
+│   │   ├── logging.ts
+│   │   └── constants.ts
+│   └── wrangler.toml
 │
 ├── scripts/
-│   └── show-deploy.sh         # Deploy script (pack + curl upload)
+│   └── show.mjs
 │
 ├── skills/
-│   └── show-deploy.md         # Claude Code skill definition
+│   └── show-deploy.md          # optional agent wrapper that calls local `show`
 │
-├── src/                       # Existing frontend landing page (kept)
-├── package.json
+├── src/                       # existing landing page
 └── CLAUDE.md
 ```
 
----
+### Package Management
 
-## Open Source — Easy Self-Hosting
+In MVP, `worker/` does not have its own `package.json`.
 
-### One-Command Setup
+To keep the repo simple:
 
-```bash
-npx create-show
-```
+- Worker dependencies are managed from the root `package.json`
+- the local client script is also managed from the root package
+- `worker/` is a source boundary, not a separate package boundary
 
-Interactive script that:
-
-1. Prompts for Cloudflare API Token (needs Workers/R2/KV/DNS permissions)
-2. Prompts for domain name
-3. Creates R2 Bucket
-4. Creates KV Namespace
-5. Configures DNS wildcard record `*.show.example.com`
-6. Deploys Worker
-7. Done
-
-### Alternative Deployment Methods
-
-| Method | Audience |
-|--------|----------|
-| `npx create-show` | Simplest, interactive one-command setup |
-| GitHub "Deploy to Cloudflare" button | Fork → click → fill Token & domain → auto deploy |
-| Manual `wrangler deploy` | Advanced users who want custom config |
-
-### Design Decisions for Easy Deployment
-
-- **Zero external dependencies** — only Cloudflare, no database/Redis/etc.
-- **Single Worker** — one Worker handles all logic
-- **Template wrangler.toml** — setup script auto-fills bucket/namespace IDs
-- **Works without custom domain** — falls back to path-based routing on `*.workers.dev` (e.g., `show-api.username.workers.dev/a3f9x2-my-project/`), since `workers.dev` does not support wildcard subdomains
-- **Single config file** — users only need to edit domain name; everything else has sensible defaults
+If the project grows later, the worker can be split into its own package.
 
 ---
 
-## Free Tier Budget (estimated daily usage: 20 deploys, avg 500KB/10 files each)
+## Future Roadmap
 
-| Resource | Free Limit | Daily Usage | Headroom |
-|----------|-----------|-------------|----------|
-| R2 storage | 10 GB/mo | ~10 MB (48h cleanup) | Ample |
-| R2 writes | 1M/mo | ~200 | Ample |
-| R2 reads | 10M/mo | Traffic-dependent | Ample |
-| KV reads | 100K/day | Traffic-dependent | Ample |
-| KV writes | 1,000/day | ~20 | Ample |
-| Worker requests | 100K/day | Traffic-dependent | Ample |
+Not in MVP, but reasonable later:
+
+1. Remote delete command
+2. Remote deployment listing by owner token
+3. Custom expiration durations
+4. `.wasm` support if needed
+5. Web upload UI
+6. Custom domains per deployment
 
 ---
 
-## Future Roadmap (not in MVP)
+## Implementation
 
-1. **User authentication** — API Key based, added as Worker middleware
-2. **Custom domain support** — users bring their own domain for deployed sites
-3. **Configurable expiration** — let deployers choose 1h / 24h / 48h / 7d
-4. **Web upload UI** — drag-and-drop interface as alternative to Agent skill
-5. **Deployment history** — list past deployments and their status
+For the MVP build order and task breakdown, see:
+
+- [2026-03-19-show-mvp-implementation-checklist.md](/Users/zhenqiang/Documents/code/show/docs/plans/2026-03-19-show-mvp-implementation-checklist.md)

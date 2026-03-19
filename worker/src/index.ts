@@ -1,0 +1,62 @@
+import { validateToken, unauthorizedResponse } from "./auth.ts";
+import { generateRequestId, log } from "./logging.ts";
+import { handleCleanup } from "./cleanup.ts";
+import { handleInspect } from "./inspect.ts";
+import { handleServe } from "./serve.ts";
+import { handleUpload } from "./upload.ts";
+import type { Env } from "./types.ts";
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const requestId = generateRequestId();
+    const url = new URL(request.url);
+    const host = url.hostname;
+    const path = url.pathname;
+
+    try {
+      // POST /upload — protected upload endpoint
+      if (request.method === "POST" && path === "/upload") {
+        if (!validateToken(request, env)) {
+          return unauthorizedResponse(requestId);
+        }
+        return await handleUpload(request, env, requestId);
+      }
+
+      // GET /_admin/deployments/:id — protected inspect endpoint
+      const adminMatch = path.match(/^\/_admin\/deployments\/([^/]+)$/);
+      if (request.method === "GET" && adminMatch) {
+        if (!validateToken(request, env)) {
+          return unauthorizedResponse(requestId);
+        }
+        return await handleInspect(env, requestId, adminMatch[1]);
+      }
+
+      // GET /* on subdomain — serve deployment files
+      const baseDomain = env.BASE_DOMAIN;
+      if (request.method === "GET" && host.endsWith(`.${baseDomain}`)) {
+        const deploymentId = host.slice(0, -(baseDomain.length + 1));
+        if (deploymentId) {
+          return await handleServe(request, env, requestId, deploymentId);
+        }
+      }
+
+      return Response.json(
+        { error: "NOT_FOUND", message: "Not found", requestId },
+        { status: 404 },
+      );
+    } catch (err) {
+      log("internal_error", {
+        requestId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+      return Response.json(
+        { error: "INTERNAL_ERROR", message: "Internal server error", requestId },
+        { status: 500 },
+      );
+    }
+  },
+
+  async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(handleCleanup(env));
+  },
+};
