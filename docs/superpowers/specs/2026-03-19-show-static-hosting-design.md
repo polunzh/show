@@ -113,7 +113,7 @@ Body:
 **Processing flow:**
 
 1. Validate `Content-Length` <= 10MB
-2. Decompress tar.gz with streaming validation:
+2. Decompress tar.gz with a lightweight streaming tar library compatible with Workers runtime (128MB memory limit, no native tar support):
    - Total uncompressed size <= 10MB
    - File count <= 100
    - File types on whitelist only
@@ -140,7 +140,7 @@ Body:
 
 ### Cron Trigger (hourly)
 
-1. List all projects in KV
+1. List all projects in KV using cursor-based pagination (KV `list()` returns max 1000 keys per call)
 2. Find projects where `expiresAt < now`
 3. Delete corresponding R2 files and KV records
 
@@ -323,7 +323,7 @@ Interactive script that:
 - **Zero external dependencies** — only Cloudflare, no database/Redis/etc.
 - **Single Worker** — one Worker handles all logic
 - **Template wrangler.toml** — setup script auto-fills bucket/namespace IDs
-- **Works without custom domain** — falls back to `*.workers.dev` subdomain
+- **Works without custom domain** — falls back to path-based routing on `*.workers.dev` (e.g., `show-api.username.workers.dev/a3f9x2-my-project/`), since `workers.dev` does not support wildcard subdomains
 - **Single config file** — users only need to edit domain name; everything else has sensible defaults
 
 ---
