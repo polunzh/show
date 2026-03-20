@@ -4,6 +4,7 @@ compatibility_date = "2026-03-19"
 
 [vars]
 BASE_DOMAIN = "127.dev"
+HOMEPAGE_HOST = "show.127.dev"
 
 [[r2_buckets]]
 binding = "SHOW_FILES"

@@ -3,6 +3,7 @@ export interface Env {
   SHOW_META: KVNamespace;
   DEPLOY_TOKEN: string;
   BASE_DOMAIN: string;
+  HOMEPAGE_HOST: string;
 }
 
 export type DeploymentStatus = "uploading" | "ready" | "failed" | "expired";

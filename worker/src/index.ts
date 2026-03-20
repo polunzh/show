@@ -1,6 +1,7 @@
 import { validateToken, unauthorizedResponse } from "./auth.ts";
 import { generateRequestId, log } from "./logging.ts";
 import { handleCleanup } from "./cleanup.ts";
+import { handleHomepage } from "./homepage.ts";
 import { handleInspect } from "./inspect.ts";
 import { handleServe } from "./serve.ts";
 import { handleUpload } from "./upload.ts";
@@ -29,6 +30,11 @@ export default {
           return unauthorizedResponse(requestId);
         }
         return await handleInspect(env, requestId, adminMatch[1]);
+      }
+
+      // GET /* on homepage host — serve landing page
+      if (request.method === "GET" && env.HOMEPAGE_HOST && host === env.HOMEPAGE_HOST) {
+        return await handleHomepage(request, env);
       }
 
       // GET /* on subdomain — serve deployment files
