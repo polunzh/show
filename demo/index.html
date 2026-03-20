@@ -46,7 +46,8 @@
       <span class="hero-badge">Open Source</span>
       <h1 class="hero-title">Deploy previews,<br />not infrastructure.</h1>
       <p class="hero-subtitle">
-        One command to publish any static site.<br />Get a live URL. Auto-expires in 48 hours.
+        Tell your AI Agent "deploy to show" and get a live URL.<br />Auto-expires in 48 hours. Zero
+        config.
       </p>
       <div class="hero-actions">
         <a href="#get-started" class="btn btn-primary">Get Started</a>
@@ -68,9 +69,9 @@
           <span class="terminal-dot dot-maximize"></span>
         </div>
         <div class="terminal-body">
-          <p><span class="t-prompt">$</span> show deploy ./dist --name my-app</p>
-          <p class="t-dim">Packing files...</p>
-          <p class="t-dim">Uploading...</p>
+          <p class="t-dim">You: "deploy this to show"</p>
+          <p class="t-spacer"></p>
+          <p class="t-dim">Agent: Deploying ./dist to Show...</p>
           <p class="t-spacer"></p>
           <p><span class="t-green">Live at:</span> https://a3f9x2-my-app.127.dev</p>
           <p><span class="t-yellow">Expires:</span> 2026-03-21 15:30 UTC (48h)</p>
@@ -178,38 +179,32 @@
     </section>
 
     <section id="get-started" class="usage-section" aria-label="Get started">
-      <h2 class="section-title">Get started in 2 steps</h2>
+      <h2 class="section-title">Get started</h2>
       <div class="steps">
         <div class="step">
           <div class="step-header">
             <span class="step-num">1</span>
-            <h3>Install and configure</h3>
+            <h3>Add the skill to your Agent</h3>
           </div>
           <p class="step-desc">
-            Install the CLI, then run <code>show init</code> to connect to a Show instance.
+            Copy the
+            <a
+              href="https://github.com/polunzh/show/blob/master/skills/show-deploy.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              >show-deploy.md</a
+            >
+            skill file into your agent's skills directory.
           </p>
           <div class="code-block">
+            <code><span class="t-dim"># Claude Code</span></code>
             <div class="code-copy">
-              <code>npm install -g show</code>
-              <button class="code-copy-btn" aria-label="Copy" data-copy="npm install -g show">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
-            </div>
-            <div class="code-copy">
-              <code>show init</code>
-              <button class="code-copy-btn" aria-label="Copy" data-copy="show init">
+              <code>cp skills/show-deploy.md .claude/skills/</code>
+              <button
+                class="code-copy-btn"
+                aria-label="Copy"
+                data-copy="cp skills/show-deploy.md .claude/skills/"
+              >
                 <svg
                   width="14"
                   height="14"
@@ -230,16 +225,18 @@
         <div class="step">
           <div class="step-header">
             <span class="step-num">2</span>
-            <h3>Deploy</h3>
+            <h3>Configure credentials</h3>
           </div>
-          <p class="step-desc">Point it at any static directory. Done.</p>
+          <p class="step-desc">
+            Get an API URL and token from your Show instance, then run <code>show init</code>.
+          </p>
           <div class="code-block">
             <div class="code-copy">
-              <code>show deploy ./dist --name my-site</code>
+              <code>npm install -g show && show init</code>
               <button
                 class="code-copy-btn"
                 aria-label="Copy"
-                data-copy="show deploy ./dist --name my-site"
+                data-copy="npm install -g show && show init"
               >
                 <svg
                   width="14"
@@ -258,25 +255,28 @@
             </div>
           </div>
         </div>
+        <div class="step">
+          <div class="step-header">
+            <span class="step-num">3</span>
+            <h3>Say "deploy to show"</h3>
+          </div>
+          <p class="step-desc">
+            Your Agent handles the rest — finds the build output, uploads it, returns the URL.
+          </p>
+        </div>
       </div>
       <div class="usage-extras">
         <p class="usage-extra-item">
-          <strong>AI Agents:</strong> Add the
-          <a
-            href="https://github.com/polunzh/show/blob/master/skills/show-deploy.md"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Show skill</a
-          >
-          to Claude Code, Codex, or OpenCode. Then just say "deploy to show".
+          <strong>Works with:</strong> Claude Code, Codex, OpenCode, or any agent that can run shell
+          commands.
         </p>
         <p class="usage-extra-item">
-          <strong>Self-hosting:</strong> Want your own instance?
+          <strong>Need your own instance?</strong>
           <a
             href="https://github.com/polunzh/show/blob/master/docs/self-hosting.md"
             target="_blank"
             rel="noopener noreferrer"
-            >Read the self-hosting guide &rarr;</a
+            >Self-hosting guide &rarr;</a
           >
         </p>
       </div>
