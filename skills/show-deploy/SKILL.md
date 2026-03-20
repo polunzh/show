@@ -22,12 +22,12 @@ Show is a temporary static hosting service. You pack a directory into a tar.gz, 
 
 ## Prerequisites
 
-No configuration needed for the public instance (`show.127.dev`). Just deploy.
+No configuration needed for the public instance (`show.127.dev`). Just deploy — no token required.
 
-For self-hosted instances, set these environment variables:
+For self-hosted instances with token auth, set these environment variables:
 
 - `SHOW_API_URL` — your instance URL
-- `SHOW_TOKEN` — your deploy token
+- `SHOW_TOKEN` — your deploy token (optional, only needed if your instance requires it)
 
 ## Step 1: Find the build output
 
@@ -47,7 +47,7 @@ Pack and upload using tar + curl. Replace `<DIR>` with the build directory and `
 ```bash
 tar czf /tmp/show-upload.tar.gz -C <DIR> . && \
 curl -s -X POST "${SHOW_API_URL:-https://show.127.dev}/upload" \
-  -H "Authorization: Bearer ${SHOW_TOKEN}" \
+  ${SHOW_TOKEN:+-H "Authorization: Bearer ${SHOW_TOKEN}"} \
   -F "file=@/tmp/show-upload.tar.gz" \
   -F "name=<NAME>" && \
 rm -f /tmp/show-upload.tar.gz
@@ -80,7 +80,7 @@ Tell the user:
 
 ```bash
 curl -s "${SHOW_API_URL:-https://show.127.dev}/_admin/deployments/<DEPLOYMENT_ID>" \
-  -H "Authorization: Bearer ${SHOW_TOKEN}"
+  ${SHOW_TOKEN:+-H "Authorization: Bearer ${SHOW_TOKEN}"}
 ```
 
 ## Constraints

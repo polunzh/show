@@ -18,7 +18,8 @@ Then say "deploy to show" in your Agent. That's it.
 - **Zero install** — skill uses bash, tar, and curl. Nothing to install.
 - **48-hour auto-expiry** — deployments clean up automatically
 - **SPA support** — handles client-side routing fallback
-- **Deploy token auth** — instance-level protection, not anonymous
+- **Anonymous deploys** — no token needed for the public instance, IP rate-limited
+- **Token auth for self-hosted** — optional deploy token for private instances
 - **Zero cost** — runs within Cloudflare free tier limits
 
 ## How it works

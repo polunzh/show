@@ -10,6 +10,7 @@ const CONFIG_DIR = path.join(os.homedir(), ".show");
 const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
 const HISTORY_FILE = path.join(CONFIG_DIR, "deployments.json");
 const MAX_UPLOAD_SIZE = 10 * 1024 * 1024;
+const DEFAULT_API_URL = "https://show.127.dev";
 
 // --- Config ---
 
@@ -17,17 +18,19 @@ function loadConfig() {
   const apiUrl = process.env.SHOW_API_URL;
   const token = process.env.SHOW_TOKEN;
 
-  if (apiUrl && token) return { apiUrl, token };
+  if (apiUrl || token) {
+    return { apiUrl: apiUrl || DEFAULT_API_URL, token };
+  }
 
   if (fs.existsSync(CONFIG_FILE)) {
     const config = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8"));
     return {
-      apiUrl: apiUrl || config.apiUrl,
+      apiUrl: apiUrl || config.apiUrl || DEFAULT_API_URL,
       token: token || config.token,
     };
   }
 
-  return { apiUrl, token };
+  return { apiUrl: DEFAULT_API_URL, token };
 }
 
 // --- History ---
@@ -93,10 +96,6 @@ async function deploy(args) {
   }
 
   const config = loadConfig();
-  if (!config.apiUrl || !config.token) {
-    console.error("Error: Show is not configured. Set SHOW_API_URL and SHOW_TOKEN, or run setup.");
-    process.exit(1);
-  }
 
   const jsonOutput = flags.json === true;
   const name = typeof flags.name === "string" ? flags.name : path.basename(absDir);
@@ -124,9 +123,14 @@ async function deploy(args) {
     formData.append("name", name);
     formData.append("mode", mode);
 
+    const headers = {};
+    if (config.token) {
+      headers.Authorization = `Bearer ${config.token}`;
+    }
+
     const response = await fetch(`${config.apiUrl}/upload`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${config.token}` },
+      headers,
       body: formData,
     });
 
@@ -226,10 +230,6 @@ async function inspect(args) {
   }
 
   const config = loadConfig();
-  if (!config.apiUrl || !config.token) {
-    console.error("Error: Show is not configured.");
-    process.exit(1);
-  }
 
   const jsonOutput = flags.json === true;
 
@@ -245,8 +245,13 @@ async function inspect(args) {
     // Not a URL, use as-is
   }
 
+  const headers = {};
+  if (config.token) {
+    headers.Authorization = `Bearer ${config.token}`;
+  }
+
   const response = await fetch(`${config.apiUrl}/_admin/deployments/${deploymentId}`, {
-    headers: { Authorization: `Bearer ${config.token}` },
+    headers,
   });
 
   const result = await response.json();
@@ -292,10 +297,10 @@ function prompt(question) {
 async function init() {
   const existing = loadConfig();
 
-  if (existing.apiUrl && existing.token) {
+  if (existing.token || existing.apiUrl !== DEFAULT_API_URL) {
     console.log(`Already configured:`);
     console.log(`  API: ${existing.apiUrl}`);
-    console.log(`  Token: ${existing.token.slice(0, 8)}...`);
+    if (existing.token) console.log(`  Token: ${existing.token.slice(0, 8)}...`);
     console.log("");
     const overwrite = await prompt("Overwrite? (y/N) ");
     if (overwrite.toLowerCase() !== "y") {
@@ -304,20 +309,14 @@ async function init() {
     }
   }
 
-  const apiUrl = String(await prompt("API URL (e.g. https://show-api.you.workers.dev): "));
-  if (!apiUrl) {
-    console.error("Error: API URL is required");
-    process.exit(1);
-  }
+  const apiUrl = String(await prompt(`API URL (default: ${DEFAULT_API_URL}): `)) || DEFAULT_API_URL;
+  const token = String(await prompt("Deploy token (optional, press Enter to skip): "));
 
-  const token = String(await prompt("Deploy token: "));
-  if (!token) {
-    console.error("Error: Deploy token is required");
-    process.exit(1);
-  }
+  const config = { apiUrl };
+  if (token) config.token = token;
 
   fs.mkdirSync(CONFIG_DIR, { recursive: true });
-  fs.writeFileSync(CONFIG_FILE, JSON.stringify({ apiUrl, token }, null, 2));
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
   console.log(`\nConfig saved to ${CONFIG_FILE}`);
   console.log("You're ready! Try: show deploy ./dist --name my-site");
 }
