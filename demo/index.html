@@ -187,20 +187,70 @@
           </p>
           <div class="code-block">
             <code><span class="t-dim"># Configure once</span></code>
-            <code>mkdir -p ~/.show</code>
-            <code
-              >echo '{"apiUrl":"https://your-instance","token":"your-token"}' &gt;
-              ~/.show/config.json</code
-            >
+            <div class="code-copy">
+              <code>mkdir -p ~/.show</code>
+              <button class="code-copy-btn" aria-label="Copy" data-copy="mkdir -p ~/.show">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="code-block">
             <code><span class="t-dim"># Deploy</span></code>
-            <code>show deploy ./dist --name my-site</code>
+            <div class="code-copy">
+              <code>show deploy ./dist --name my-site</code>
+              <button
+                class="code-copy-btn"
+                aria-label="Copy"
+                data-copy="show deploy ./dist --name my-site"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="code-block">
             <code><span class="t-dim"># Check your deployments</span></code>
-            <code>show list</code>
-            <code>show inspect &lt;id&gt;</code>
+            <div class="code-copy">
+              <code>show list</code>
+              <button class="code-copy-btn" aria-label="Copy" data-copy="show list">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <div class="usage-divider" aria-hidden="true">
@@ -212,9 +262,64 @@
             Set up a private Show instance on your Cloudflare account. Free tier is enough.
           </p>
           <div class="code-block">
-            <code>git clone https://github.com/polunzh/show.git</code>
-            <code>cd show && npm install</code>
-            <code>node scripts/setup.mjs</code>
+            <div class="code-copy">
+              <code>git clone https://github.com/polunzh/show.git</code>
+              <button
+                class="code-copy-btn"
+                aria-label="Copy"
+                data-copy="git clone https://github.com/polunzh/show.git"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+            <div class="code-copy">
+              <code>cd show && npm install</code>
+              <button class="code-copy-btn" aria-label="Copy" data-copy="cd show && npm install">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+            <div class="code-copy">
+              <code>node scripts/setup.mjs</code>
+              <button class="code-copy-btn" aria-label="Copy" data-copy="node scripts/setup.mjs">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
           </div>
           <p class="usage-path-link">
             <a
@@ -271,6 +376,22 @@
         const expanded = this.getAttribute("aria-expanded") === "true";
         this.setAttribute("aria-expanded", !expanded);
         links.classList.toggle("nav-open");
+      });
+
+      document.querySelectorAll(".code-copy-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var text = this.getAttribute("data-copy");
+          navigator.clipboard.writeText(text).then(function () {
+            btn.classList.add("copied");
+            btn.innerHTML =
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+            setTimeout(function () {
+              btn.classList.remove("copied");
+              btn.innerHTML =
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+            }, 1500);
+          });
+        });
       });
     </script>
   </body>

@@ -480,22 +480,60 @@ code {
   display: block;
   font-size: 0.8rem;
   padding: 0.5rem 0.75rem;
+  padding-right: 2.5rem;
   background: var(--bg-subtle);
   border-radius: 6px;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow-x: auto;
-  mask-image: linear-gradient(to right, #000 90%, transparent);
-  -webkit-mask-image: linear-gradient(to right, #000 90%, transparent);
-}
-
-.code-block code:hover {
-  mask-image: none;
-  -webkit-mask-image: none;
+  position: relative;
+  cursor: text;
+  user-select: all;
+  -webkit-user-select: all;
 }
 
 .code-block .t-dim {
   color: var(--text-tertiary);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.code-copy {
+  position: relative;
+}
+
+.code-copy-btn {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1;
+}
+
+.code-copy:hover .code-copy-btn {
+  opacity: 1;
+}
+
+.code-copy-btn:hover {
+  color: var(--text);
+  border-color: var(--text-tertiary);
+}
+
+.code-copy-btn.copied {
+  color: var(--green);
+  border-color: var(--green);
+  opacity: 1;
 }
 
 /* ── Limits ──────────────────────────────── */
