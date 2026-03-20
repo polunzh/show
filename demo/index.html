@@ -178,18 +178,38 @@
     </section>
 
     <section id="get-started" class="usage-section" aria-label="Get started">
-      <h2 class="section-title">Get started</h2>
-      <div class="usage-tabs">
-        <div class="usage-path">
-          <h3 class="usage-path-title">Use Show</h3>
-          <p class="usage-path-desc">
-            If someone has already set up a Show instance and shared a token with you.
+      <h2 class="section-title">Get started in 2 steps</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-header">
+            <span class="step-num">1</span>
+            <h3>Install and configure</h3>
+          </div>
+          <p class="step-desc">
+            Install the CLI, then run <code>show init</code> to connect to a Show instance.
           </p>
           <div class="code-block">
-            <code><span class="t-dim"># Configure once</span></code>
             <div class="code-copy">
-              <code>mkdir -p ~/.show</code>
-              <button class="code-copy-btn" aria-label="Copy" data-copy="mkdir -p ~/.show">
+              <code>npm install -g show</code>
+              <button class="code-copy-btn" aria-label="Copy" data-copy="npm install -g show">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+            <div class="code-copy">
+              <code>show init</code>
+              <button class="code-copy-btn" aria-label="Copy" data-copy="show init">
                 <svg
                   width="14"
                   height="14"
@@ -206,8 +226,14 @@
               </button>
             </div>
           </div>
+        </div>
+        <div class="step">
+          <div class="step-header">
+            <span class="step-num">2</span>
+            <h3>Deploy</h3>
+          </div>
+          <p class="step-desc">Point it at any static directory. Done.</p>
           <div class="code-block">
-            <code><span class="t-dim"># Deploy</span></code>
             <div class="code-copy">
               <code>show deploy ./dist --name my-site</code>
               <button
@@ -231,105 +257,28 @@
               </button>
             </div>
           </div>
-          <div class="code-block">
-            <code><span class="t-dim"># Check your deployments</span></code>
-            <div class="code-copy">
-              <code>show list</code>
-              <button class="code-copy-btn" aria-label="Copy" data-copy="show list">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
-            </div>
-          </div>
         </div>
-        <div class="usage-divider" aria-hidden="true">
-          <span>or</span>
-        </div>
-        <div class="usage-path">
-          <h3 class="usage-path-title">Host your own</h3>
-          <p class="usage-path-desc">
-            Set up a private Show instance on your Cloudflare account. Free tier is enough.
-          </p>
-          <div class="code-block">
-            <div class="code-copy">
-              <code>git clone https://github.com/polunzh/show.git</code>
-              <button
-                class="code-copy-btn"
-                aria-label="Copy"
-                data-copy="git clone https://github.com/polunzh/show.git"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
-            </div>
-            <div class="code-copy">
-              <code>cd show && npm install</code>
-              <button class="code-copy-btn" aria-label="Copy" data-copy="cd show && npm install">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
-            </div>
-            <div class="code-copy">
-              <code>node scripts/setup.mjs</code>
-              <button class="code-copy-btn" aria-label="Copy" data-copy="node scripts/setup.mjs">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <p class="usage-path-link">
-            <a
-              href="https://github.com/polunzh/show/blob/master/docs/self-hosting.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Read the self-hosting guide &rarr;</a
-            >
-          </p>
-        </div>
+      </div>
+      <div class="usage-extras">
+        <p class="usage-extra-item">
+          <strong>AI Agents:</strong> Add the
+          <a
+            href="https://github.com/polunzh/show/blob/master/skills/show-deploy.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Show skill</a
+          >
+          to Claude Code, Codex, or OpenCode. Then just say "deploy to show".
+        </p>
+        <p class="usage-extra-item">
+          <strong>Self-hosting:</strong> Want your own instance?
+          <a
+            href="https://github.com/polunzh/show/blob/master/docs/self-hosting.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Read the self-hosting guide &rarr;</a
+          >
+        </p>
       </div>
     </section>
 

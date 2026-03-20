@@ -1,51 +1,73 @@
 # Show Deploy
 
-Deploy a static site directory to Show for temporary hosting.
+Deploy the current project's static build output to Show for a temporary public preview.
 
 ## When to use
 
-Use when the user asks to:
+Trigger when the user says:
 
-- "deploy to show", "upload to show", "preview this site"
+- "deploy to show", "deploy this", "preview this site"
 - "部署到 show", "上传到 show", "发布预览"
-- Share a static build output publicly
+- "show me a live preview"
+- After building a frontend project and the user wants to share it
 
-## Prerequisites
+## How it works
 
-- Show must be configured (`~/.show/config.json` must exist with `apiUrl` and `token`)
-- Or environment variables `SHOW_API_URL` and `SHOW_TOKEN` must be set
-- The target directory must contain static files (HTML, CSS, JS, images, fonts)
+Show is a temporary static hosting service. You deploy a directory, get a public URL, it auto-expires in 48 hours.
 
-## Commands
-
-### Deploy a directory
+## Step 1: Check if Show is configured
 
 ```bash
-node scripts/show.mjs deploy <directory> --name <name> [--mode static|spa] [--json]
+cat ~/.show/config.json 2>/dev/null
 ```
 
-### List deployments
+If the file doesn't exist or is empty, tell the user:
+
+> Show is not configured yet. You need an API URL and deploy token from a Show instance.
+> Run `show init` to set it up interactively, or ask your team for the credentials.
+
+Then stop. Do not proceed without configuration.
+
+## Step 2: Find the build output
+
+Look for common build output directories in the current project:
+
+1. `./dist` (Vite, Webpack, Rollup)
+2. `./build` (Create React App)
+3. `./out` (Next.js static export)
+4. `./.next/out` (Next.js)
+5. `./public` (if it's a plain static site)
+
+If no build directory is found, suggest building first:
 
 ```bash
-node scripts/show.mjs list [--json]
+vp build  # or npm run build
 ```
 
-### Inspect a deployment
+## Step 3: Deploy
 
 ```bash
-node scripts/show.mjs inspect <deployment-id-or-url> [--json]
+show deploy <directory> --name <project-name> --json
 ```
 
-## JSON output
+- Use the project name from `package.json` or the directory name as `--name`
+- Always use `--json` to get structured output
+- Add `--mode spa` if the project uses client-side routing (React Router, Vue Router, etc.)
 
-Always use `--json` when calling from an agent. Parse the JSON output to extract the URL.
+## Step 4: Report the result
 
-### Deploy success response
+Parse the JSON output and tell the user:
+
+- The live URL
+- When it expires
+- The deployment ID (for `show inspect` later)
+
+## Example output
 
 ```json
 {
   "deploymentId": "a3f9x2-my-project",
-  "url": "https://a3f9x2-my-project.show.example.com",
+  "url": "https://a3f9x2-my-project.127.dev",
   "createdAt": "2026-03-19T15:30:00Z",
   "expiresAt": "2026-03-21T15:30:00Z",
   "mode": "static",
@@ -53,16 +75,16 @@ Always use `--json` when calling from an agent. Parse the JSON output to extract
 }
 ```
 
+## Other commands
+
+```bash
+show list --json          # List local deployment history
+show inspect <id> --json  # Check deployment status
+```
+
 ## Constraints
 
-- Maximum upload size: 10MB (compressed and extracted)
-- Maximum 100 files per deployment
-- Deployments expire after 48 hours
-- Only static file types are supported (HTML, CSS, JS, JSON, images, fonts, etc.)
-- Modes: `static` (default, exact file matching) or `spa` (falls back to index.html)
-
-## Exit codes
-
-- `0`: success
-- `1`: known error (auth failure, validation error, network error)
-- `2`: usage error (bad arguments)
+- Max upload: 10 MB (compressed and extracted)
+- Max 100 files per deployment
+- 48-hour auto-expiry
+- Static files only (HTML, CSS, JS, JSON, images, fonts, SVG, etc.)

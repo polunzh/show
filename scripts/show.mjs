@@ -4,6 +4,7 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import readline from "node:readline";
 
 const CONFIG_DIR = path.join(os.homedir(), ".show");
 const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
@@ -276,16 +277,62 @@ async function inspect(args) {
   }
 }
 
+// --- Init ---
+
+function prompt(question) {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+async function init() {
+  const existing = loadConfig();
+
+  if (existing.apiUrl && existing.token) {
+    console.log(`Already configured:`);
+    console.log(`  API: ${existing.apiUrl}`);
+    console.log(`  Token: ${existing.token.slice(0, 8)}...`);
+    console.log("");
+    const overwrite = await prompt("Overwrite? (y/N) ");
+    if (overwrite.toLowerCase() !== "y") {
+      console.log("Kept existing config.");
+      return;
+    }
+  }
+
+  const apiUrl = String(await prompt("API URL (e.g. https://show-api.you.workers.dev): "));
+  if (!apiUrl) {
+    console.error("Error: API URL is required");
+    process.exit(1);
+  }
+
+  const token = String(await prompt("Deploy token: "));
+  if (!token) {
+    console.error("Error: Deploy token is required");
+    process.exit(1);
+  }
+
+  fs.mkdirSync(CONFIG_DIR, { recursive: true });
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify({ apiUrl, token }, null, 2));
+  console.log(`\nConfig saved to ${CONFIG_FILE}`);
+  console.log("You're ready! Try: show deploy ./dist --name my-site");
+}
+
 // --- Main ---
 
 const [command, ...args] = process.argv.slice(2);
 
-const commands = { deploy, list, inspect };
+const commands = { init, deploy, list, inspect };
 
 if (!command || !commands[command]) {
   console.log("Usage: show <command> [options]");
   console.log("");
   console.log("Commands:");
+  console.log("  init            Configure API URL and deploy token");
   console.log("  deploy <dir>    Deploy a static site directory");
   console.log("  list            List local deployment history");
   console.log("  inspect <id>    Inspect a deployment");

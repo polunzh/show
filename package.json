@@ -2,6 +2,9 @@
   "name": "show",
   "version": "0.0.0",
   "private": true,
+  "bin": {
+    "show": "./scripts/show.mjs"
+  },
   "type": "module",
   "scripts": {
     "dev": "vp dev",

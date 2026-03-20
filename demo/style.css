@@ -413,13 +413,13 @@ code {
   padding: 6rem 2rem;
 }
 
-.usage-tabs {
+.steps {
   display: flex;
-  gap: 0;
-  align-items: stretch;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.usage-path {
+.step {
   flex: 1;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -427,47 +427,59 @@ code {
   padding: 2rem;
 }
 
-.usage-path-title {
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.step-header h3 {
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
   letter-spacing: -0.01em;
 }
 
-.usage-path-desc {
+.step-desc {
   font-size: 0.875rem;
-  color: var(--text-tertiary);
-  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
   line-height: 1.5;
 }
 
-.usage-path-link {
-  margin-top: 1.25rem;
-  font-size: 0.875rem;
+.usage-extras {
+  display: flex;
+  gap: 2rem;
 }
 
-.usage-path-link a {
+.usage-extra-item {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.usage-extra-item a {
   color: var(--accent);
   font-weight: 500;
 }
 
-.usage-path-link a:hover {
+.usage-extra-item a:hover {
   color: var(--accent-light);
-}
-
-.usage-path .code-block + .code-block {
-  margin-top: 1rem;
-}
-
-.usage-divider {
-  display: flex;
-  align-items: center;
-  padding: 0 1.5rem;
-  color: var(--text-tertiary);
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .code-block {
@@ -658,22 +670,13 @@ code {
     grid-template-columns: 1fr;
   }
 
-  .usage-tabs {
+  .steps {
     flex-direction: column;
   }
 
-  .usage-divider {
-    padding: 1.25rem 0;
-    justify-content: center;
+  .usage-extras {
+    flex-direction: column;
     gap: 1rem;
-  }
-
-  .usage-divider::before,
-  .usage-divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
   }
 
   .arch-flow {
