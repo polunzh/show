@@ -12,18 +12,18 @@
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
 
-  --bg: #09090b;
-  --bg-elevated: #18181b;
-  --bg-subtle: #27272a;
-  --border: #3f3f46;
+  --bg: #0c0a09;
+  --bg-elevated: #1c1917;
+  --bg-subtle: #292524;
+  --border: #44403c;
 
-  --text: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #71717a;
+  --text: #fafaf9;
+  --text-secondary: #a8a29e;
+  --text-tertiary: #78716c;
 
-  --accent: #6d28d9;
-  --accent-light: #8b5cf6;
-  --accent-subtle: rgba(109, 40, 217, 0.12);
+  --accent: #d97706;
+  --accent-light: #f59e0b;
+  --accent-subtle: rgba(217, 119, 6, 0.1);
 
   --green: #34d399;
   --yellow: #fbbf24;
@@ -63,7 +63,7 @@ a:hover {
 /* ── Focus ───────────────────────────────── */
 
 :focus-visible {
-  outline: 2px solid var(--accent-light);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -83,7 +83,7 @@ code {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(9, 9, 11, 0.8);
+  background: rgba(12, 10, 9, 0.8);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
