@@ -187,23 +187,50 @@
             <h3>Add the skill</h3>
           </div>
           <p class="step-desc">
-            Copy
+            Download
             <a
               href="https://github.com/polunzh/show/blob/master/skills/show-deploy.md"
               target="_blank"
               rel="noopener noreferrer"
               >show-deploy.md</a
             >
-            into your agent's skills directory and configure credentials.
+            into your agent's skills directory, and set two environment variables.
           </p>
           <div class="code-block">
-            <code><span class="t-dim"># Claude Code</span></code>
+            <code><span class="t-dim"># Claude Code example</span></code>
             <div class="code-copy">
-              <code>cp skills/show-deploy.md .claude/skills/</code>
+              <code
+                >mkdir -p .claude/skills && curl -sL
+                https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o
+                .claude/skills/show-deploy.md</code
+              >
               <button
                 class="code-copy-btn"
                 aria-label="Copy"
-                data-copy="cp skills/show-deploy.md .claude/skills/"
+                data-copy="mkdir -p .claude/skills && curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o .claude/skills/show-deploy.md"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+            <code><span class="t-dim"># Set credentials (add to your shell profile)</span></code>
+            <div class="code-copy">
+              <code>export SHOW_API_URL=https://your-instance.workers.dev</code>
+              <button
+                class="code-copy-btn"
+                aria-label="Copy"
+                data-copy="export SHOW_API_URL=https://your-instance.workers.dev"
               >
                 <svg
                   width="14"
@@ -221,11 +248,11 @@
               </button>
             </div>
             <div class="code-copy">
-              <code>npm i -g show && show init</code>
+              <code>export SHOW_TOKEN=your-deploy-token</code>
               <button
                 class="code-copy-btn"
                 aria-label="Copy"
-                data-copy="npm i -g show && show init"
+                data-copy="export SHOW_TOKEN=your-deploy-token"
               >
                 <svg
                   width="14"
@@ -247,42 +274,32 @@
         <div class="step">
           <div class="step-header">
             <span class="step-num">2</span>
-            <h3>Deploy</h3>
+            <h3>Say "deploy to show"</h3>
           </div>
           <p class="step-desc">
-            Say "deploy to show" in your Agent, or run the command directly. Your Agent finds the
-            build output, uploads it, and returns the URL.
+            Your Agent finds the build output, packs it, uploads it via curl, and returns a live
+            URL. Nothing else to install.
           </p>
-          <div class="code-block">
-            <div class="code-copy">
-              <code>show deploy ./dist --name my-site</code>
-              <button
-                class="code-copy-btn"
-                aria-label="Copy"
-                data-copy="show deploy ./dist --name my-site"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
+          <div class="terminal" style="margin-top: 1.25rem">
+            <div class="terminal-bar" aria-hidden="true">
+              <span class="terminal-dot dot-close"></span>
+              <span class="terminal-dot dot-minimize"></span>
+              <span class="terminal-dot dot-maximize"></span>
+            </div>
+            <div class="terminal-body">
+              <p class="t-dim">You: "deploy this to show"</p>
+              <p class="t-spacer"></p>
+              <p class="t-dim">Agent: Packing ./dist and uploading...</p>
+              <p class="t-spacer"></p>
+              <p><span class="t-green">Live at:</span> https://a3f9x2-my-site.127.dev</p>
+              <p><span class="t-yellow">Expires:</span> 48h</p>
             </div>
           </div>
         </div>
       </div>
       <div class="usage-extras">
         <p class="usage-extra-item">
-          <strong>Works with:</strong> Claude Code, Codex, OpenCode, or any agent that can run shell
-          commands.
+          <strong>Works with:</strong> Claude Code, Codex, OpenCode — any agent that can run bash.
         </p>
         <p class="usage-extra-item">
           <strong>Need your own instance?</strong>

@@ -1,47 +1,45 @@
 # Show
 
-Temporary static hosting for AI Agents. Deploy a static site with one command, get a public preview URL, auto-expire after 48 hours.
+Temporary static hosting for AI Agents. Say "deploy to show" in your Agent, get a public preview URL, auto-expire after 48 hours.
 
 [中文文档](./README.zh-CN.md)
 
 ## Quick Start
 
-```bash
-# Deploy a static site
-show deploy ./dist --name my-project
+1. Add the [show-deploy.md](./skills/show-deploy.md) skill to your agent's skills directory
+2. Set environment variables: `SHOW_API_URL` and `SHOW_TOKEN`
+3. Say "deploy to show" — your Agent handles the rest
 
-# Output:
-# Live at: https://a3f9x2-my-project.127.dev
-# Expires: 2026-03-21 15:30 UTC (48h)
+```bash
+# Claude Code example
+mkdir -p .claude/skills
+curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md \
+  -o .claude/skills/show-deploy.md
+
+# Set credentials
+export SHOW_API_URL=https://your-instance.workers.dev
+export SHOW_TOKEN=your-deploy-token
 ```
 
 ## Features
 
-- **One-command deploy** — `show deploy ./dist` from any AI Agent or terminal
+- **Agent-native** — just say "deploy to show" in Claude Code, Codex, or OpenCode
+- **Zero install** — skill uses bash, tar, and curl. Nothing to install.
 - **48-hour auto-expiry** — deployments clean up automatically
-- **SPA support** — `--mode spa` enables client-side routing fallback
+- **SPA support** — handles client-side routing fallback
 - **Deploy token auth** — instance-level protection, not anonymous
-- **Agent-friendly** — JSON output mode for Claude Code, Codex, OpenCode, etc.
 - **Zero cost** — runs within Cloudflare free tier limits
 
-## Commands
+## How it works
 
-```bash
-# Deploy a directory
-show deploy ./dist --name my-project
+The skill instructs your Agent to:
 
-# Deploy as SPA
-show deploy ./dist --name my-spa --mode spa
+1. Find the build output directory (`./dist`, `./build`, etc.)
+2. Pack it into a tar.gz
+3. Upload via `curl` to the Show API
+4. Return the live URL
 
-# List local deployment history
-show list
-
-# Inspect a deployment
-show inspect <deployment-id-or-url>
-
-# JSON output (for agents)
-show deploy ./dist --name my-project --json
-```
+No CLI binary, no npm package, no global install. Just a skill file and two environment variables.
 
 ## Limits
 
@@ -51,19 +49,6 @@ show deploy ./dist --name my-project --json
 | Max files per deployment | 100                                                |
 | Deployment lifetime      | 48 hours                                           |
 | Supported file types     | HTML, CSS, JS, JSON, images, fonts, SVG, XML, etc. |
-
-## Configuration
-
-The client reads config from `~/.show/config.json`:
-
-```json
-{
-  "apiUrl": "https://your-show-instance.example.com",
-  "token": "your-deploy-token"
-}
-```
-
-Or via environment variables: `SHOW_API_URL` and `SHOW_TOKEN`.
 
 ## Self-Hosting
 

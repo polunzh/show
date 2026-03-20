@@ -2,9 +2,6 @@
   "name": "show",
   "version": "0.0.0",
   "private": true,
-  "bin": {
-    "show": "./scripts/show.mjs"
-  },
   "type": "module",
   "scripts": {
     "dev": "vp dev",
@@ -13,7 +10,6 @@
     "prepare": "vp config",
     "worker:dev": "wrangler dev --config worker/wrangler.toml",
     "worker:deploy": "wrangler deploy --config worker/wrangler.toml",
-    "show": "node scripts/show.mjs",
     "setup": "node scripts/setup.mjs"
   },
   "devDependencies": {

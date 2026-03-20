@@ -13,56 +13,52 @@ Trigger when the user says:
 
 ## How it works
 
-Show is a temporary static hosting service. You deploy a directory, get a public URL, it auto-expires in 48 hours.
+Show is a temporary static hosting service. You pack a directory into a tar.gz, POST it to a Show API, and get a public URL that auto-expires in 48 hours. No CLI installation needed — just bash, tar, and curl.
 
-## Step 1: Check if Show is configured
+## Prerequisites
+
+Two environment variables must be set:
+
+- `SHOW_API_URL` — the Show instance API endpoint
+- `SHOW_TOKEN` — the deploy token
+
+Check them:
 
 ```bash
-cat ~/.show/config.json 2>/dev/null
+echo "API: ${SHOW_API_URL:-not set}" && echo "Token: ${SHOW_TOKEN:+set}"
 ```
 
-If the file doesn't exist or is empty, tell the user:
+If not set, tell the user they need to set `SHOW_API_URL` and `SHOW_TOKEN` in their environment (shell profile, `.env`, or agent settings), then stop.
 
-> Show is not configured yet. You need an API URL and deploy token from a Show instance.
-> Run `show init` to set it up interactively, or ask your team for the credentials.
-
-Then stop. Do not proceed without configuration.
-
-## Step 2: Find the build output
+## Step 1: Find the build output
 
 Look for common build output directories in the current project:
 
 1. `./dist` (Vite, Webpack, Rollup)
 2. `./build` (Create React App)
 3. `./out` (Next.js static export)
-4. `./.next/out` (Next.js)
-5. `./public` (if it's a plain static site)
+4. `./public` (if it's a plain static site)
 
-If no build directory is found, suggest building first:
+If none exist, suggest building first (`npm run build` or equivalent).
 
-```bash
-vp build  # or npm run build
-```
+## Step 2: Deploy
 
-## Step 3: Deploy
+Pack and upload using tar + curl. Replace `<DIR>` with the build directory and `<NAME>` with the project name (from `package.json` name field or directory name):
 
 ```bash
-show deploy <directory> --name <project-name> --json
+tar czf /tmp/show-upload.tar.gz -C <DIR> . && \
+curl -s -X POST "${SHOW_API_URL}/upload" \
+  -H "Authorization: Bearer ${SHOW_TOKEN}" \
+  -F "file=@/tmp/show-upload.tar.gz" \
+  -F "name=<NAME>" && \
+rm -f /tmp/show-upload.tar.gz
 ```
 
-- Use the project name from `package.json` or the directory name as `--name`
-- Always use `--json` to get structured output
-- Add `--mode spa` if the project uses client-side routing (React Router, Vue Router, etc.)
+For SPA projects (React Router, Vue Router, etc.), add `-F "mode=spa"`.
 
-## Step 4: Report the result
+## Step 3: Report the result
 
-Parse the JSON output and tell the user:
-
-- The live URL
-- When it expires
-- The deployment ID (for `show inspect` later)
-
-## Example output
+The API returns JSON:
 
 ```json
 {
@@ -75,11 +71,17 @@ Parse the JSON output and tell the user:
 }
 ```
 
-## Other commands
+Tell the user:
+
+- The live URL
+- When it expires (48h from now)
+- The deployment ID
+
+## Inspect a deployment
 
 ```bash
-show list --json          # List local deployment history
-show inspect <id> --json  # Check deployment status
+curl -s "${SHOW_API_URL}/_admin/deployments/<DEPLOYMENT_ID>" \
+  -H "Authorization: Bearer ${SHOW_TOKEN}"
 ```
 
 ## Constraints
