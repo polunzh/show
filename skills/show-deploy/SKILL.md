@@ -70,7 +70,7 @@ The API returns JSON:
 Tell the user:
 
 - The live URL
-- When it expires (48h from now)
+- The exact expiration time: parse `expiresAt` from the response and format it as a human-readable local time with date and time down to the minute (e.g., "2026-03-21 15:30"). Do NOT just say "48h from now" — show the actual time.
 - The deployment ID
 
 ## Inspect a deployment
