@@ -1,32 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Show — Temporary Static Hosting for AI Agents</title>
+    <title>Show — AI Agent 临时静态托管</title>
     <meta
       name="description"
-      content="Temporary static hosting for AI Agents. One command deploy, 48-hour auto-expiry, zero cost. Built on Cloudflare."
+      content="为 AI Agent 设计的临时静态托管服务。一条命令部署，48 小时自动过期，零成本。基于 Cloudflare 构建。"
     />
-    <meta property="og:title" content="Show — Temporary Static Hosting for AI Agents" />
+    <meta property="og:title" content="Show — AI Agent 临时静态托管" />
     <meta
       property="og:description"
-      content="Deploy a static site with one command, get a public preview URL, auto-expire after 48 hours."
+      content="一条命令部署静态站点，获取公开预览链接，48 小时后自动过期。"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://show.127.dev" />
-    <link rel="stylesheet" href="style.css" />
+    <meta property="og:url" content="https://show.127.dev/zh/" />
+    <link rel="stylesheet" href="../style.css" />
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9650;</text></svg>"
     />
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Skip to content</a>
-    <nav class="nav" aria-label="Main navigation">
+    <a href="#main-content" class="skip-link">跳到正文</a>
+    <nav class="nav" aria-label="主导航">
       <div class="nav-inner">
-        <a href="/" class="nav-logo">Show</a>
-        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <a href="/zh/" class="nav-logo">Show</a>
+        <button class="nav-toggle" aria-label="切换菜单" aria-expanded="false">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <rect y="3" width="20" height="2" rx="1" />
             <rect y="9" width="20" height="2" rx="1" />
@@ -34,37 +34,36 @@
           </svg>
         </button>
         <div class="nav-links">
-          <a href="#how-it-works">How it works</a>
-          <a href="#get-started">Get started</a>
+          <a href="#how-it-works">工作原理</a>
+          <a href="#get-started">快速开始</a>
           <a href="https://github.com/polunzh/show" target="_blank" rel="noopener noreferrer"
             >GitHub</a
           >
-          <a href="/zh/" class="nav-lang" aria-label="切换到中文">中文</a>
+          <a href="/" class="nav-lang" aria-label="Switch to English">EN</a>
         </div>
       </div>
     </nav>
 
     <main id="main-content">
       <header class="hero">
-        <span class="hero-badge">Open Source</span>
-        <h1 class="hero-title">Deploy previews,<br />not infrastructure.</h1>
+        <span class="hero-badge">开源项目</span>
+        <h1 class="hero-title">部署预览，<br />而非基础设施。</h1>
         <p class="hero-subtitle">
-          Tell your AI Agent "deploy to show" and get a live URL.<br />Auto-expires in 48 hours.
-          Zero config.
+          告诉你的 AI Agent "deploy to show"，即可获得在线链接。<br />48 小时自动过期，零配置。
         </p>
         <div class="hero-actions">
-          <a href="#get-started" class="btn btn-primary">Get Started</a>
+          <a href="#get-started" class="btn btn-primary">快速开始</a>
           <a
             href="https://github.com/polunzh/show"
             class="btn btn-secondary"
             target="_blank"
             rel="noopener noreferrer"
-            >View Source</a
+            >查看源码</a
           >
         </div>
       </header>
 
-      <section class="terminal-section" aria-label="Demo">
+      <section class="terminal-section" aria-label="演示">
         <div class="terminal">
           <div class="terminal-bar" aria-hidden="true">
             <span class="terminal-dot dot-close"></span>
@@ -82,37 +81,37 @@
         </div>
       </section>
 
-      <section id="how-it-works" class="arch-section" aria-label="How it works">
-        <h2 class="section-title">How it works</h2>
+      <section id="how-it-works" class="arch-section" aria-label="工作原理">
+        <h2 class="section-title">工作原理</h2>
         <div class="arch-flow">
           <div class="arch-step">
             <div class="arch-num">1</div>
-            <div class="arch-label">Pack</div>
-            <p>Your static directory is archived automatically</p>
+            <div class="arch-label">打包</div>
+            <p>自动将静态目录归档</p>
           </div>
           <span class="arch-arrow" aria-hidden="true">&rarr;</span>
           <div class="arch-step">
             <div class="arch-num">2</div>
-            <div class="arch-label">Upload</div>
-            <p>Files are sent to Cloudflare's global edge</p>
+            <div class="arch-label">上传</div>
+            <p>文件发送到 Cloudflare 全球边缘网络</p>
           </div>
           <span class="arch-arrow" aria-hidden="true">&rarr;</span>
           <div class="arch-step">
             <div class="arch-num">3</div>
-            <div class="arch-label">Live</div>
-            <p>Instantly available on a unique URL</p>
+            <div class="arch-label">上线</div>
+            <p>通过唯一链接即时访问</p>
           </div>
           <span class="arch-arrow" aria-hidden="true">&rarr;</span>
           <div class="arch-step">
             <div class="arch-num">4</div>
-            <div class="arch-label">Expire</div>
-            <p>Auto-cleaned after 48 hours</p>
+            <div class="arch-label">过期</div>
+            <p>48 小时后自动清理</p>
           </div>
         </div>
       </section>
 
-      <section class="features" aria-label="Features">
-        <h2 class="section-title">Built for how you already work</h2>
+      <section class="features" aria-label="特性">
+        <h2 class="section-title">融入你现有的工作流</h2>
         <ul class="features-grid">
           <li class="feature-card">
             <div class="feature-icon" aria-hidden="true">
@@ -130,11 +129,8 @@
                 <line x1="12" y1="19" x2="20" y2="19"></line>
               </svg>
             </div>
-            <h3>Any terminal, any Agent</h3>
-            <p>
-              Works from your shell, Claude Code, Codex, OpenCode, or any tool that can run a
-              command.
-            </p>
+            <h3>任何终端，任何 Agent</h3>
+            <p>支持你的 shell、Claude Code、Codex、OpenCode，或任何能运行命令的工具。</p>
           </li>
           <li class="feature-card">
             <div class="feature-icon" aria-hidden="true">
@@ -152,10 +148,8 @@
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
             </div>
-            <h3>Nothing to clean up</h3>
-            <p>
-              Deployments expire automatically. No orphaned previews, no forgotten infrastructure.
-            </p>
+            <h3>无需清理</h3>
+            <p>部署自动过期。没有遗留预览，没有被遗忘的基础设施。</p>
           </li>
           <li class="feature-card">
             <div class="feature-icon" aria-hidden="true">
@@ -174,25 +168,23 @@
                 ></path>
               </svg>
             </div>
-            <h3>Your own instance</h3>
-            <p>
-              Self-host on your Cloudflare account. One setup command. Zero cost on the free tier.
-            </p>
+            <h3>自托管</h3>
+            <p>部署到你自己的 Cloudflare 账户。一条命令完成配置，免费套餐即可运行。</p>
           </li>
         </ul>
       </section>
 
-      <section id="get-started" class="usage-section" aria-label="Get started">
-        <h2 class="section-title">Get started</h2>
+      <section id="get-started" class="usage-section" aria-label="快速开始">
+        <h2 class="section-title">快速开始</h2>
         <div class="steps">
           <div class="step">
             <div class="step-header">
               <span class="step-num">1</span>
-              <h3>Install the skill</h3>
+              <h3>安装 Skill</h3>
             </div>
             <p class="step-desc">
-              A skill is a markdown file that teaches your AI Agent how to use Show. One command
-              installs it into Claude Code, Codex, Cursor, and other supported agents.
+              Skill 是一个 Markdown 文件，教会你的 AI Agent 如何使用 Show。一条命令即可安装到 Claude
+              Code、Codex、Cursor 等支持的 Agent 中。
             </p>
 
             <div class="code-block">
@@ -200,7 +192,7 @@
                 <code>npx skills add polunzh/show</code>
                 <button
                   class="code-copy-btn"
-                  aria-label="Copy"
+                  aria-label="复制"
                   data-copy="npx skills add polunzh/show"
                 >
                   <svg
@@ -223,11 +215,11 @@
           <div class="step">
             <div class="step-header">
               <span class="step-num">2</span>
-              <h3>Say "deploy to show"</h3>
+              <h3>说 "deploy to show"</h3>
             </div>
             <p class="step-desc">
-              Your Agent finds the build output, packs it, uploads it via curl, and returns a live
-              URL. Nothing else to install.
+              你的 Agent 会找到构建产物，打包、通过 curl
+              上传，然后返回在线链接。无需安装其他任何东西。
             </p>
             <div class="terminal" style="margin-top: 1.25rem">
               <div class="terminal-bar" aria-hidden="true">
@@ -248,38 +240,38 @@
         </div>
         <div class="usage-extras">
           <p class="usage-extra-item">
-            <strong>Works with:</strong> Claude Code, Codex, OpenCode — any agent that can run bash.
+            <strong>支持：</strong>Claude Code、Codex、OpenCode — 任何能运行 bash 的 Agent。
           </p>
           <p class="usage-extra-item">
-            <strong>Need your own instance?</strong>
+            <strong>需要自己的实例？</strong>
             <a
-              href="https://github.com/polunzh/show/blob/master/docs/self-hosting.md"
+              href="https://github.com/polunzh/show/blob/master/docs/self-hosting.zh-CN.md"
               target="_blank"
               rel="noopener noreferrer"
-              >Self-hosting guide <span aria-hidden="true">&rarr;</span></a
+              >自托管指南 <span aria-hidden="true">&rarr;</span></a
             >
           </p>
         </div>
       </section>
 
-      <section class="limits-section" aria-label="Constraints">
-        <h2 class="section-title">Constraints</h2>
+      <section class="limits-section" aria-label="限制">
+        <h2 class="section-title">使用限制</h2>
         <div class="limits-grid">
           <div class="limit-item">
             <span class="limit-value">10 MB</span>
-            <span class="limit-label">max upload</span>
+            <span class="limit-label">最大上传</span>
           </div>
           <div class="limit-item">
             <span class="limit-value">100</span>
-            <span class="limit-label">files per deploy</span>
+            <span class="limit-label">文件数上限</span>
           </div>
           <div class="limit-item">
             <span class="limit-value">48 h</span>
-            <span class="limit-label">auto-expiry</span>
+            <span class="limit-label">自动过期</span>
           </div>
           <div class="limit-item">
             <span class="limit-value">$0</span>
-            <span class="limit-label">hosting cost</span>
+            <span class="limit-label">托管费用</span>
           </div>
         </div>
       </section>
@@ -288,7 +280,7 @@
     <footer class="footer">
       <div class="footer-inner">
         <p class="footer-logo">Show</p>
-        <p class="footer-text">Open source under MIT. Built with Cloudflare Workers.</p>
+        <p class="footer-text">MIT 开源许可证。基于 Cloudflare Workers 构建。</p>
         <div class="footer-links">
           <a href="https://github.com/polunzh/show" target="_blank" rel="noopener noreferrer"
             >GitHub</a

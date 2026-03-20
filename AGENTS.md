@@ -75,6 +75,20 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 - [ ] Run `vp check` and `vp test` to validate changes.
 <!--VITE PLUS END-->
 
+## Deploying the Homepage
+
+The landing page lives in `site/` (static HTML + CSS). It is served by the Worker from R2 under the `_homepage/` prefix when the request host matches `HOMEPAGE_HOST` (show.127.dev).
+
+To deploy homepage changes, upload each file to the remote R2 bucket:
+
+```bash
+npx wrangler r2 object put show-files/_homepage/index.html --file site/index.html --content-type "text/html; charset=utf-8" --remote
+npx wrangler r2 object put show-files/_homepage/style.css --file site/style.css --content-type "text/css; charset=utf-8" --remote
+npx wrangler r2 object put show-files/_homepage/zh/index.html --file site/zh/index.html --content-type "text/html; charset=utf-8" --remote
+```
+
+If new static files are added to `site/` (images, fonts, etc.), upload them the same way with the appropriate `--content-type`. The Chinese version at `site/zh/` references `../style.css` so the stylesheet only needs to be uploaded once.
+
 ## Project Conventions
 
 - **README files**: English and Chinese documentation must be in separate files — `README.md` (English) and `README.zh-CN.md` (Chinese). Do not combine them in one file.
