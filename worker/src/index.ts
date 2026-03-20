@@ -21,19 +21,11 @@ export default {
     const path = url.pathname;
 
     try {
-      // POST /upload — upload endpoint
+      // POST /upload — open endpoint, rate limited by IP
       if (request.method === "POST" && path === "/upload") {
-        if (hasToken(env)) {
-          // Self-hosted mode: require token
-          if (!validateToken(request, env)) {
-            return unauthorizedResponse(requestId);
-          }
-        } else {
-          // Public mode: rate limit by IP
-          const { allowed } = await checkRateLimit(request, env.SHOW_META);
-          if (!allowed) {
-            return rateLimitedResponse(requestId);
-          }
+        const { allowed } = await checkRateLimit(request, env.SHOW_META);
+        if (!allowed) {
+          return rateLimitedResponse(requestId);
         }
         return await handleUpload(request, env, requestId);
       }
