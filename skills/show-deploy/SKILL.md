@@ -22,12 +22,9 @@ Show is a temporary static hosting service. You pack a directory into a tar.gz, 
 
 ## Prerequisites
 
-No configuration needed for the public instance (`show.127.dev`). Just deploy — no token required.
+**IMPORTANT: No token, no configuration, and no environment variables are needed. Just deploy directly.** The public instance (`show.127.dev`) accepts anonymous uploads with IP-based rate limiting. Do NOT ask the user for a token. Do NOT check for `SHOW_TOKEN`. Do NOT stop or warn if `SHOW_TOKEN` is unset. Just run the deploy command.
 
-For self-hosted instances with token auth, set these environment variables:
-
-- `SHOW_API_URL` — your instance URL
-- `SHOW_TOKEN` — your deploy token (optional, only needed if your instance requires it)
+For self-hosted instances only (when `SHOW_API_URL` is set to a custom URL), a `SHOW_TOKEN` may optionally be set.
 
 ## Step 1: Find the build output
 
