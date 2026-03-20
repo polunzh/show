@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Show — Temporary Static Hosting for AI Agents</title>
+    <meta
+      name="description"
+      content="Temporary static hosting for AI Agents. One command deploy, 48-hour auto-expiry, zero cost. Built on Cloudflare."
+    />
+    <meta property="og:title" content="Show — Temporary Static Hosting for AI Agents" />
+    <meta
+      property="og:description"
+      content="Deploy a static site with one command, get a public preview URL, auto-expire after 48 hours."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://show.127.dev" />
     <link rel="stylesheet" href="style.css" />
     <link
       rel="icon"
@@ -11,19 +22,28 @@
     />
   </head>
   <body>
-    <nav class="nav">
+    <nav class="nav" aria-label="Main navigation">
       <div class="nav-inner">
         <a href="/" class="nav-logo">Show</a>
+        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <rect y="3" width="20" height="2" rx="1" />
+            <rect y="9" width="20" height="2" rx="1" />
+            <rect y="15" width="20" height="2" rx="1" />
+          </svg>
+        </button>
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="#usage">Usage</a>
-          <a href="https://github.com/polunzh/show" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/polunzh/show" target="_blank" rel="noopener noreferrer"
+            >GitHub</a
+          >
         </div>
       </div>
     </nav>
 
     <header class="hero">
-      <p class="hero-badge">Open Source</p>
+      <span class="hero-badge">Open Source</span>
       <h1 class="hero-title">Deploy previews,<br />not infrastructure.</h1>
       <p class="hero-subtitle">
         Temporary static hosting for AI Agents.<br />One command. 48-hour expiry. Zero cost.
@@ -34,35 +54,35 @@
           href="https://github.com/polunzh/show"
           class="btn btn-secondary"
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
           >View Source</a
         >
       </div>
     </header>
 
-    <section class="terminal-section">
+    <section class="terminal-section" aria-label="Demo">
       <div class="terminal">
-        <div class="terminal-bar">
-          <span class="terminal-dot" style="background: #ff5f57"></span>
-          <span class="terminal-dot" style="background: #febc2e"></span>
-          <span class="terminal-dot" style="background: #28c840"></span>
+        <div class="terminal-bar" aria-hidden="true">
+          <span class="terminal-dot dot-close"></span>
+          <span class="terminal-dot dot-minimize"></span>
+          <span class="terminal-dot dot-maximize"></span>
         </div>
         <div class="terminal-body">
           <p><span class="t-prompt">$</span> show deploy ./dist --name my-app</p>
           <p class="t-dim">Packing files...</p>
           <p class="t-dim">Uploading...</p>
-          <p></p>
-          <p><span class="t-green">Live at:</span> https://a3f9x2-my-app.show.example.com</p>
+          <p class="t-spacer"></p>
+          <p><span class="t-green">Live at:</span> https://a3f9x2-my-app.127.dev</p>
           <p><span class="t-yellow">Expires:</span> 2026-03-21 15:30 UTC (48h)</p>
         </div>
       </div>
     </section>
 
-    <section id="features" class="features">
-      <h2 class="section-title">Built for the AI-native workflow</h2>
+    <section id="features" class="features" aria-label="Features">
+      <h2 class="section-title">How Show fits your workflow</h2>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">
+          <div class="feature-icon" aria-hidden="true">
             <svg
               width="24"
               height="24"
@@ -84,7 +104,7 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
+          <div class="feature-icon" aria-hidden="true">
             <svg
               width="24"
               height="24"
@@ -106,7 +126,7 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
+          <div class="feature-icon" aria-hidden="true">
             <svg
               width="24"
               height="24"
@@ -127,7 +147,7 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
+          <div class="feature-icon" aria-hidden="true">
             <svg
               width="24"
               height="24"
@@ -150,7 +170,7 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
+          <div class="feature-icon" aria-hidden="true">
             <svg
               width="24"
               height="24"
@@ -170,7 +190,7 @@
           <p>Run on your own Cloudflare account. One setup command creates everything you need.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
+          <div class="feature-icon" aria-hidden="true">
             <svg
               width="24"
               height="24"
@@ -193,7 +213,7 @@
       </div>
     </section>
 
-    <section class="arch-section">
+    <section class="arch-section" aria-label="How it works">
       <h2 class="section-title">How it works</h2>
       <div class="arch-flow">
         <div class="arch-step">
@@ -201,19 +221,19 @@
           <div class="arch-label">Pack</div>
           <p>CLI archives your directory into a tar.gz</p>
         </div>
-        <div class="arch-arrow">&rarr;</div>
+        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
         <div class="arch-step">
           <div class="arch-num">2</div>
           <div class="arch-label">Upload</div>
           <p>Files are sent to a Cloudflare Worker</p>
         </div>
-        <div class="arch-arrow">&rarr;</div>
+        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
         <div class="arch-step">
           <div class="arch-num">3</div>
           <div class="arch-label">Serve</div>
           <p>Instantly live on a unique subdomain</p>
         </div>
-        <div class="arch-arrow">&rarr;</div>
+        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
         <div class="arch-step">
           <div class="arch-num">4</div>
           <div class="arch-label">Expire</div>
@@ -222,7 +242,7 @@
       </div>
     </section>
 
-    <section id="usage" class="usage-section">
+    <section id="usage" class="usage-section" aria-label="Quick start">
       <h2 class="section-title">Quick start</h2>
       <div class="usage-grid">
         <div class="usage-card">
@@ -249,7 +269,7 @@
       </div>
     </section>
 
-    <section class="limits-section">
+    <section class="limits-section" aria-label="Constraints">
       <h2 class="section-title">Constraints</h2>
       <div class="limits-grid">
         <div class="limit-item">
@@ -276,10 +296,23 @@
         <p class="footer-logo">Show</p>
         <p class="footer-text">Open source under MIT. Built with Cloudflare Workers.</p>
         <div class="footer-links">
-          <a href="https://github.com/polunzh/show" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://github.com/polunzh/show/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/polunzh/show" target="_blank" rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <a href="https://github.com/polunzh/show/issues" target="_blank" rel="noopener noreferrer"
+            >Issues</a
+          >
         </div>
       </div>
     </footer>
+
+    <script>
+      document.querySelector(".nav-toggle").addEventListener("click", function () {
+        const links = document.querySelector(".nav-links");
+        const expanded = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", !expanded);
+        links.classList.toggle("nav-open");
+      });
+    </script>
   </body>
 </html>
