@@ -1,4 +1,10 @@
-import { validateToken, unauthorizedResponse } from "./auth.ts";
+import {
+  hasToken,
+  validateToken,
+  checkRateLimit,
+  unauthorizedResponse,
+  rateLimitedResponse,
+} from "./auth.ts";
 import { generateRequestId, log } from "./logging.ts";
 import { handleCleanup } from "./cleanup.ts";
 import { handleHomepage } from "./homepage.ts";
@@ -15,10 +21,19 @@ export default {
     const path = url.pathname;
 
     try {
-      // POST /upload — protected upload endpoint
+      // POST /upload — upload endpoint
       if (request.method === "POST" && path === "/upload") {
-        if (!validateToken(request, env)) {
-          return unauthorizedResponse(requestId);
+        if (hasToken(env)) {
+          // Self-hosted mode: require token
+          if (!validateToken(request, env)) {
+            return unauthorizedResponse(requestId);
+          }
+        } else {
+          // Public mode: rate limit by IP
+          const { allowed } = await checkRateLimit(request, env.SHOW_META);
+          if (!allowed) {
+            return rateLimitedResponse(requestId);
+          }
         }
         return await handleUpload(request, env, requestId);
       }
@@ -26,7 +41,7 @@ export default {
       // GET /_admin/deployments/:id — protected inspect endpoint
       const adminMatch = path.match(/^\/_admin\/deployments\/([^/]+)$/);
       if (request.method === "GET" && adminMatch) {
-        if (!validateToken(request, env)) {
+        if (hasToken(env) && !validateToken(request, env)) {
           return unauthorizedResponse(requestId);
         }
         return await handleInspect(env, requestId, adminMatch[1]);

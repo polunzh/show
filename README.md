@@ -6,20 +6,11 @@ Temporary static hosting for AI Agents. Say "deploy to show" in your Agent, get 
 
 ## Quick Start
 
-1. Add the [show-deploy.md](./skills/show-deploy.md) skill to your agent's skills directory
-2. Set environment variables: `SHOW_API_URL` and `SHOW_TOKEN`
-3. Say "deploy to show" — your Agent handles the rest
-
 ```bash
-# Claude Code example
-mkdir -p .claude/skills
-curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md \
-  -o .claude/skills/show-deploy.md
-
-# Set credentials
-export SHOW_API_URL=https://your-instance.workers.dev
-export SHOW_TOKEN=your-deploy-token
+npx skills add polunzh/show
 ```
+
+Then say "deploy to show" in your Agent. That's it.
 
 ## Features
 
@@ -39,7 +30,7 @@ The skill instructs your Agent to:
 3. Upload via `curl` to the Show API
 4. Return the live URL
 
-No CLI binary, no npm package, no global install. Just a skill file and two environment variables.
+No CLI binary, no global install, no config. Just `npx skills add` and go.
 
 ## Limits
 

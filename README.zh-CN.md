@@ -6,20 +6,11 @@
 
 ## 快速开始
 
-1. 将 [show-deploy.md](./skills/show-deploy.md) skill 文件添加到你的 Agent 的 skills 目录
-2. 设置环境变量：`SHOW_API_URL` 和 `SHOW_TOKEN`
-3. 说 "deploy to show" — Agent 自动完成部署
-
 ```bash
-# Claude Code 示例
-mkdir -p .claude/skills
-curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md \
-  -o .claude/skills/show-deploy.md
-
-# 设置凭证
-export SHOW_API_URL=https://your-instance.workers.dev
-export SHOW_TOKEN=your-deploy-token
+npx skills add polunzh/show
 ```
+
+然后在你的 Agent 中说 "deploy to show"，就这样。
 
 ## 特性
 
@@ -39,7 +30,7 @@ Skill 指导你的 Agent：
 3. 通过 `curl` 上传到 Show API
 4. 返回在线 URL
 
-不需要 CLI、不需要 npm 包、不需要全局安装。只需一个 skill 文件和两个环境变量。
+不需要 CLI、不需要全局安装、不需要配置。只需 `npx skills add` 即可。
 
 ## 限制
 

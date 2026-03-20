@@ -6,6 +6,7 @@ export const UPLOAD_TIMEOUT_MS = 10 * 60 * 1000;
 export const FAILED_GRACE_MS = 60 * 60 * 1000;
 export const MAX_CACHE_AGE = 300;
 export const R2_CONCURRENCY = 5;
+export const RATE_LIMIT_PER_HOUR = 5;
 export const ID_LENGTH = 6;
 export const MAX_SLUG_LENGTH = 56;
 

@@ -1,3 +1,8 @@
+---
+name: show-deploy
+description: Deploy the current project's static build output to Show for a temporary public preview. Use when the user says "deploy to show", "deploy this", "preview this site", or wants a live URL for a frontend build.
+---
+
 # Show Deploy
 
 Deploy the current project's static build output to Show for a temporary public preview.
@@ -17,18 +22,12 @@ Show is a temporary static hosting service. You pack a directory into a tar.gz, 
 
 ## Prerequisites
 
-Two environment variables must be set:
+No configuration needed for the public instance (`show.127.dev`). Just deploy.
 
-- `SHOW_API_URL` — the Show instance API endpoint
-- `SHOW_TOKEN` — the deploy token
+For self-hosted instances, set these environment variables:
 
-Check them:
-
-```bash
-echo "API: ${SHOW_API_URL:-not set}" && echo "Token: ${SHOW_TOKEN:+set}"
-```
-
-If not set, tell the user they need to set `SHOW_API_URL` and `SHOW_TOKEN` in their environment (shell profile, `.env`, or agent settings), then stop.
+- `SHOW_API_URL` — your instance URL
+- `SHOW_TOKEN` — your deploy token
 
 ## Step 1: Find the build output
 
@@ -47,7 +46,7 @@ Pack and upload using tar + curl. Replace `<DIR>` with the build directory and `
 
 ```bash
 tar czf /tmp/show-upload.tar.gz -C <DIR> . && \
-curl -s -X POST "${SHOW_API_URL}/upload" \
+curl -s -X POST "${SHOW_API_URL:-https://show.127.dev}/upload" \
   -H "Authorization: Bearer ${SHOW_TOKEN}" \
   -F "file=@/tmp/show-upload.tar.gz" \
   -F "name=<NAME>" && \
@@ -80,7 +79,7 @@ Tell the user:
 ## Inspect a deployment
 
 ```bash
-curl -s "${SHOW_API_URL}/_admin/deployments/<DEPLOYMENT_ID>" \
+curl -s "${SHOW_API_URL:-https://show.127.dev}/_admin/deployments/<DEPLOYMENT_ID>" \
   -H "Authorization: Bearer ${SHOW_TOKEN}"
 ```
 
