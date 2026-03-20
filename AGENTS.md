@@ -78,3 +78,5 @@ These commands map to their corresponding tools. For example, `vp dev --port 300
 ## Project Conventions
 
 - **README files**: English and Chinese documentation must be in separate files — `README.md` (English) and `README.zh-CN.md` (Chinese). Do not combine them in one file.
+- **Documentation language**: All documentation files must have both English and Chinese versions. English is the primary version; Chinese files use `.zh-CN.md` suffix (e.g., `self-hosting.md` and `self-hosting.zh-CN.md`).
+- **Documentation sync**: After any code or feature change, check whether related documentation needs to be updated. This includes README, self-hosting guide, skill definitions, and any other docs. Both language versions must stay in sync.
