@@ -67,7 +67,7 @@ show deploy ./dist --name my-project --json
 
 ## 自托管
 
-Show 是开源项目，可以零成本部署到你自己的 Cloudflare 账户。详见[自托管指南](./docs/self-hosting.md)。
+Show 是开源项目，可以零成本部署到你自己的 Cloudflare 账户。详见[自托管指南](./docs/self-hosting.zh-CN.md)。
 
 ## 开发
 
