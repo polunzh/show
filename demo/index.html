@@ -184,17 +184,17 @@
         <div class="step">
           <div class="step-header">
             <span class="step-num">1</span>
-            <h3>Add the skill to your Agent</h3>
+            <h3>Add the skill</h3>
           </div>
           <p class="step-desc">
-            Copy the
+            Copy
             <a
               href="https://github.com/polunzh/show/blob/master/skills/show-deploy.md"
               target="_blank"
               rel="noopener noreferrer"
               >show-deploy.md</a
             >
-            skill file into your agent's skills directory.
+            into your agent's skills directory and configure credentials.
           </p>
           <div class="code-block">
             <code><span class="t-dim"># Claude Code</span></code>
@@ -220,23 +220,12 @@
                 </svg>
               </button>
             </div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-header">
-            <span class="step-num">2</span>
-            <h3>Configure credentials</h3>
-          </div>
-          <p class="step-desc">
-            Get an API URL and token from your Show instance, then run <code>show init</code>.
-          </p>
-          <div class="code-block">
             <div class="code-copy">
-              <code>npm install -g show && show init</code>
+              <code>npm i -g show && show init</code>
               <button
                 class="code-copy-btn"
                 aria-label="Copy"
-                data-copy="npm install -g show && show init"
+                data-copy="npm i -g show && show init"
               >
                 <svg
                   width="14"
@@ -257,12 +246,37 @@
         </div>
         <div class="step">
           <div class="step-header">
-            <span class="step-num">3</span>
-            <h3>Say "deploy to show"</h3>
+            <span class="step-num">2</span>
+            <h3>Deploy</h3>
           </div>
           <p class="step-desc">
-            Your Agent handles the rest — finds the build output, uploads it, returns the URL.
+            Say "deploy to show" in your Agent, or run the command directly. Your Agent finds the
+            build output, uploads it, and returns the URL.
           </p>
+          <div class="code-block">
+            <div class="code-copy">
+              <code>show deploy ./dist --name my-site</code>
+              <button
+                class="code-copy-btn"
+                aria-label="Copy"
+                data-copy="show deploy ./dist --name my-site"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="usage-extras">

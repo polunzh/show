@@ -415,7 +415,7 @@ code {
 
 .steps {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -637,14 +637,6 @@ code {
     grid-column: 1 / -1;
     max-width: 50%;
     margin: 0 auto;
-  }
-
-  .steps {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .step:nth-child(3) {
-    grid-column: 1 / -1;
   }
 }
 
