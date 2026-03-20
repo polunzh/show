@@ -12,21 +12,26 @@
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
 
-  --bg: #0c0a09;
-  --bg-elevated: #1c1917;
-  --bg-subtle: #292524;
-  --border: #44403c;
+  --bg: #f8f6f3;
+  --bg-elevated: #fff;
+  --bg-subtle: #f0ece8;
+  --border: #e2ded9;
 
-  --text: #fafaf9;
-  --text-secondary: #a8a29e;
-  --text-tertiary: #78716c;
+  --text: #1c1917;
+  --text-secondary: #57534e;
+  --text-tertiary: #a8a29e;
 
-  --accent: #d97706;
-  --accent-light: #f59e0b;
-  --accent-subtle: rgba(217, 119, 6, 0.1);
+  --accent: #b45309;
+  --accent-light: #d97706;
+  --accent-subtle: rgba(180, 83, 9, 0.08);
 
-  --green: #34d399;
-  --yellow: #fbbf24;
+  --green: #059669;
+  --yellow: #ca8a04;
+
+  --terminal-bg: #1c1917;
+  --terminal-border: #44403c;
+  --terminal-text: #fafaf9;
+  --terminal-dim: #78716c;
 
   --dot-close: #ff5f57;
   --dot-minimize: #febc2e;
@@ -83,7 +88,7 @@ code {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(12, 10, 9, 0.8);
+  background: rgba(248, 246, 243, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
@@ -148,7 +153,7 @@ code {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--accent-light);
+  color: var(--accent);
   background: var(--accent-subtle);
   padding: 0.35em 1em;
   border-radius: 100px;
@@ -201,7 +206,7 @@ code {
 }
 
 .btn-primary:hover {
-  background: var(--accent-light);
+  background: #92400e;
   color: #fff;
 }
 
@@ -226,17 +231,18 @@ code {
 }
 
 .terminal {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  background: var(--terminal-bg);
+  border: 1px solid var(--terminal-border);
   border-radius: var(--radius);
   overflow: hidden;
+  color: var(--terminal-text);
 }
 
 .terminal-bar {
   display: flex;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--terminal-border);
 }
 
 .terminal-dot {
@@ -269,20 +275,20 @@ code {
 }
 
 .t-prompt {
-  color: var(--accent-light);
+  color: #f59e0b;
   margin-right: 0.5em;
 }
 
 .t-dim {
-  color: var(--text-tertiary);
+  color: var(--terminal-dim);
 }
 
 .t-green {
-  color: var(--green);
+  color: #34d399;
 }
 
 .t-yellow {
-  color: var(--yellow);
+  color: #fbbf24;
 }
 
 /* ── Section Title ───────────────────────── */
@@ -318,7 +324,7 @@ code {
 }
 
 .feature-card:hover {
-  border-color: var(--text-tertiary);
+  border-color: var(--accent-light);
 }
 
 .feature-icon {
@@ -328,7 +334,7 @@ code {
   align-items: center;
   justify-content: center;
   background: var(--accent-subtle);
-  color: var(--accent-light);
+  color: var(--accent);
   border-radius: var(--radius-sm);
   margin-bottom: 1.25rem;
 }
@@ -376,7 +382,7 @@ code {
   font-size: 0.875rem;
   font-weight: 600;
   background: var(--accent-subtle);
-  color: var(--accent-light);
+  color: var(--accent);
   border-radius: 50%;
 }
 
@@ -437,7 +443,7 @@ code {
   display: block;
   font-size: 0.8rem;
   padding: 0.5rem 0.75rem;
-  background: var(--bg);
+  background: var(--bg-subtle);
   border-radius: 6px;
   color: var(--text-secondary);
   white-space: nowrap;
