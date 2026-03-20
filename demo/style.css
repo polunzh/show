@@ -537,6 +537,12 @@ code {
   opacity: 1;
 }
 
+@media (hover: none) {
+  .code-copy-btn {
+    opacity: 0.6;
+  }
+}
+
 .code-copy-btn:hover {
   color: var(--text);
   border-color: var(--text-tertiary);
@@ -632,6 +638,19 @@ code {
     max-width: 50%;
     margin: 0 auto;
   }
+
+  .steps {
+    flex-wrap: wrap;
+  }
+
+  .step:nth-child(1),
+  .step:nth-child(2) {
+    flex: 1 1 45%;
+  }
+
+  .step:nth-child(3) {
+    flex: 1 1 100%;
+  }
 }
 
 /* ── Responsive: Mobile ─────────────────── */
@@ -659,10 +678,9 @@ code {
   }
 
   .nav-links a {
-    display: block;
+    display: flex;
     padding: 0.75rem 2rem;
     min-height: 44px;
-    display: flex;
     align-items: center;
   }
 
