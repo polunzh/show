@@ -413,24 +413,57 @@ code {
   padding: 6rem 2rem;
 }
 
-.usage-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+.usage-tabs {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
 }
 
-.usage-card {
+.usage-path {
+  flex: 1;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 2rem;
 }
 
-.usage-card h3 {
-  font-size: 1rem;
+.usage-path-title {
+  font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   letter-spacing: -0.01em;
+}
+
+.usage-path-desc {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.usage-path-link {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.usage-path-link a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.usage-path-link a:hover {
+  color: var(--accent-light);
+}
+
+.usage-divider {
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .code-block {
@@ -455,6 +488,10 @@ code {
 .code-block code:hover {
   mask-image: none;
   -webkit-mask-image: none;
+}
+
+.code-block .t-dim {
+  color: var(--text-tertiary);
 }
 
 /* ── Limits ──────────────────────────────── */
@@ -528,22 +565,6 @@ code {
   color: var(--text-tertiary);
 }
 
-/* ── Responsive: Tablet ──────────────────── */
-
-@media (max-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .usage-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .usage-card:last-child {
-    grid-column: 1 / -1;
-  }
-}
-
 /* ── Responsive: Mobile ─────────────────── */
 
 @media (max-width: 768px) {
@@ -580,12 +601,13 @@ code {
     grid-template-columns: 1fr;
   }
 
-  .usage-grid {
-    grid-template-columns: 1fr;
+  .usage-tabs {
+    flex-direction: column;
   }
 
-  .usage-card:last-child {
-    grid-column: auto;
+  .usage-divider {
+    padding: 1rem 0;
+    justify-content: center;
   }
 
   .arch-flow {

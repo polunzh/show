@@ -33,8 +33,8 @@
           </svg>
         </button>
         <div class="nav-links">
-          <a href="#features">Features</a>
-          <a href="#usage">Usage</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#get-started">Get started</a>
           <a href="https://github.com/polunzh/show" target="_blank" rel="noopener noreferrer"
             >GitHub</a
           >
@@ -46,10 +46,10 @@
       <span class="hero-badge">Open Source</span>
       <h1 class="hero-title">Deploy previews,<br />not infrastructure.</h1>
       <p class="hero-subtitle">
-        Temporary static hosting for AI Agents.<br />One command. 48-hour expiry. Zero cost.
+        One command to publish any static site.<br />Get a live URL. Auto-expires in 48 hours.
       </p>
       <div class="hero-actions">
-        <a href="#usage" class="btn btn-primary">Get Started</a>
+        <a href="#get-started" class="btn btn-primary">Get Started</a>
         <a
           href="https://github.com/polunzh/show"
           class="btn btn-secondary"
@@ -78,8 +78,37 @@
       </div>
     </section>
 
-    <section id="features" class="features" aria-label="Features">
-      <h2 class="section-title">How Show fits your workflow</h2>
+    <section id="how-it-works" class="arch-section" aria-label="How it works">
+      <h2 class="section-title">How it works</h2>
+      <div class="arch-flow">
+        <div class="arch-step">
+          <div class="arch-num">1</div>
+          <div class="arch-label">Pack</div>
+          <p>Your static directory is archived automatically</p>
+        </div>
+        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
+        <div class="arch-step">
+          <div class="arch-num">2</div>
+          <div class="arch-label">Upload</div>
+          <p>Files are sent to Cloudflare's global edge</p>
+        </div>
+        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
+        <div class="arch-step">
+          <div class="arch-num">3</div>
+          <div class="arch-label">Live</div>
+          <p>Instantly available on a unique URL</p>
+        </div>
+        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
+        <div class="arch-step">
+          <div class="arch-num">4</div>
+          <div class="arch-label">Expire</div>
+          <p>Auto-cleaned after 48 hours</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" aria-label="Features">
+      <h2 class="section-title">Built for how you already work</h2>
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon" aria-hidden="true">
@@ -97,10 +126,9 @@
               <line x1="12" y1="19" x2="20" y2="19"></line>
             </svg>
           </div>
-          <h3>One Command</h3>
+          <h3>Any terminal, any Agent</h3>
           <p>
-            Deploy any static directory with <code>show deploy ./dist</code>. Works from any
-            terminal or AI Agent.
+            Works from your shell, Claude Code, Codex, OpenCode, or any tool that can run a command.
           </p>
         </div>
         <div class="feature-card">
@@ -119,54 +147,9 @@
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
           </div>
-          <h3>48-Hour Expiry</h3>
+          <h3>Nothing to clean up</h3>
           <p>
-            Every deployment auto-expires. No orphaned previews, no forgotten infrastructure, no
-            surprise bills.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon" aria-hidden="true">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-          </div>
-          <h3>Secure by Default</h3>
-          <p>
-            Instance-level deploy tokens. File type validation. Path traversal protection. No
-            anonymous uploads.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon" aria-hidden="true">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-              <line x1="8" y1="21" x2="16" y2="21"></line>
-              <line x1="12" y1="17" x2="12" y2="21"></line>
-            </svg>
-          </div>
-          <h3>SPA Support</h3>
-          <p>
-            Static multi-page sites work out of the box. Add <code>--mode spa</code> for client-side
-            routing fallback.
+            Deployments expire automatically. No orphaned previews, no forgotten infrastructure.
           </p>
         </div>
         <div class="feature-card">
@@ -186,85 +169,61 @@
               ></path>
             </svg>
           </div>
-          <h3>Self-Hostable</h3>
-          <p>Run on your own Cloudflare account. One setup command creates everything you need.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon" aria-hidden="true">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-          </div>
-          <h3>Zero Cost</h3>
+          <h3>Your own instance</h3>
           <p>
-            Runs entirely within Cloudflare's free tier. Workers, R2, KV — all within free limits.
+            Self-host on your Cloudflare account. One setup command. Zero cost on the free tier.
           </p>
         </div>
       </div>
     </section>
 
-    <section class="arch-section" aria-label="How it works">
-      <h2 class="section-title">How it works</h2>
-      <div class="arch-flow">
-        <div class="arch-step">
-          <div class="arch-num">1</div>
-          <div class="arch-label">Pack</div>
-          <p>CLI archives your directory into a tar.gz</p>
-        </div>
-        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
-        <div class="arch-step">
-          <div class="arch-num">2</div>
-          <div class="arch-label">Upload</div>
-          <p>Files are sent to a Cloudflare Worker</p>
-        </div>
-        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
-        <div class="arch-step">
-          <div class="arch-num">3</div>
-          <div class="arch-label">Serve</div>
-          <p>Instantly live on a unique subdomain</p>
-        </div>
-        <span class="arch-arrow" aria-hidden="true">&rarr;</span>
-        <div class="arch-step">
-          <div class="arch-num">4</div>
-          <div class="arch-label">Expire</div>
-          <p>Auto-cleaned after 48 hours</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="usage" class="usage-section" aria-label="Quick start">
-      <h2 class="section-title">Quick start</h2>
-      <div class="usage-grid">
-        <div class="usage-card">
-          <h3>Install</h3>
+    <section id="get-started" class="usage-section" aria-label="Get started">
+      <h2 class="section-title">Get started</h2>
+      <div class="usage-tabs">
+        <div class="usage-path">
+          <h3 class="usage-path-title">Use Show</h3>
+          <p class="usage-path-desc">
+            If someone has already set up a Show instance and shared a token with you.
+          </p>
           <div class="code-block">
-            <code>git clone https://github.com/polunzh/show.git</code>
-            <code>cd show && vp install</code>
-            <code>node scripts/setup.mjs</code>
+            <code><span class="t-dim"># Configure once</span></code>
+            <code>mkdir -p ~/.show</code>
+            <code
+              >echo '{"apiUrl":"https://your-instance","token":"your-token"}' &gt;
+              ~/.show/config.json</code
+            >
           </div>
-        </div>
-        <div class="usage-card">
-          <h3>Deploy</h3>
-          <div class="code-block">
+          <div class="code-block" style="margin-top: 1rem">
+            <code><span class="t-dim"># Deploy</span></code>
             <code>show deploy ./dist --name my-site</code>
           </div>
-        </div>
-        <div class="usage-card">
-          <h3>Manage</h3>
-          <div class="code-block">
+          <div class="code-block" style="margin-top: 1rem">
+            <code><span class="t-dim"># Check your deployments</span></code>
             <code>show list</code>
             <code>show inspect &lt;id&gt;</code>
           </div>
+        </div>
+        <div class="usage-divider" aria-hidden="true">
+          <span>or</span>
+        </div>
+        <div class="usage-path">
+          <h3 class="usage-path-title">Host your own</h3>
+          <p class="usage-path-desc">
+            Set up a private Show instance on your Cloudflare account. Free tier is enough.
+          </p>
+          <div class="code-block">
+            <code>git clone https://github.com/polunzh/show.git</code>
+            <code>cd show && npm install</code>
+            <code>node scripts/setup.mjs</code>
+          </div>
+          <p class="usage-path-link">
+            <a
+              href="https://github.com/polunzh/show/blob/master/docs/self-hosting.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Read the self-hosting guide &rarr;</a
+            >
+          </p>
         </div>
       </div>
     </section>
