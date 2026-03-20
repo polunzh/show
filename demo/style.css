@@ -414,13 +414,13 @@ code {
 }
 
 .steps {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .step {
-  flex: 1;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -640,16 +640,11 @@ code {
   }
 
   .steps {
-    flex-wrap: wrap;
-  }
-
-  .step:nth-child(1),
-  .step:nth-child(2) {
-    flex: 1 1 45%;
+    grid-template-columns: 1fr 1fr;
   }
 
   .step:nth-child(3) {
-    flex: 1 1 100%;
+    grid-column: 1 / -1;
   }
 }
 
@@ -689,7 +684,7 @@ code {
   }
 
   .steps {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .usage-extras {
