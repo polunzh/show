@@ -1,17 +1,16 @@
-import { MIME_TYPES } from "./constants.ts";
+import { MIME_TYPES, getExtension } from "./constants.ts";
 import type { Env } from "./types.ts";
 
 const R2_PREFIX = "_homepage/";
-
-function getExtension(filePath: string): string {
-  const dot = filePath.lastIndexOf(".");
-  return dot >= 0 ? filePath.slice(dot).toLowerCase() : "";
-}
 
 export async function handleHomepage(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   let filePath = url.pathname.replace(/^\//, "") || "index.html";
   if (filePath.endsWith("/")) filePath += "index.html";
+
+  if (filePath.includes("..") || filePath.includes("\\") || filePath.includes("\0")) {
+    return new Response("Bad Request", { status: 400 });
+  }
 
   const r2Key = `${R2_PREFIX}${filePath}`;
   const object = await env.SHOW_FILES.get(r2Key);

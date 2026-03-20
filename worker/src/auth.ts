@@ -5,7 +5,7 @@ export function hasToken(env: Env): boolean {
   return typeof env.DEPLOY_TOKEN === "string" && env.DEPLOY_TOKEN.length > 0;
 }
 
-export function validateToken(request: Request, env: Env): boolean {
+export async function validateToken(request: Request, env: Env): Promise<boolean> {
   const header = request.headers.get("Authorization");
   if (!header) return false;
 
@@ -15,17 +15,18 @@ export function validateToken(request: Request, env: Env): boolean {
   const provided = parts[1];
   const expected = env.DEPLOY_TOKEN;
 
-  if (provided.length !== expected.length) return false;
-
-  // Constant-time comparison via hash
+  // Constant-time comparison via SHA-256 digest to avoid leaking token length
   const encoder = new TextEncoder();
-  const a = encoder.encode(provided);
-  const b = encoder.encode(expected);
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(provided)),
+    crypto.subtle.digest("SHA-256", encoder.encode(expected)),
+  ]);
 
-  let mismatch = a.length ^ b.length;
-  const len = Math.min(a.length, b.length);
-  for (let i = 0; i < len; i++) {
-    mismatch |= a[i] ^ b[i];
+  const aBytes = new Uint8Array(a);
+  const bBytes = new Uint8Array(b);
+  let mismatch = 0;
+  for (let i = 0; i < aBytes.length; i++) {
+    mismatch |= aBytes[i] ^ bBytes[i];
   }
   return mismatch === 0;
 }
@@ -39,11 +40,18 @@ function getRateLimitKey(ip: string): string {
   return `ratelimit:${ip}:${hour}`;
 }
 
+// NOTE: KV-based rate limiting has an inherent TOCTOU race — concurrent requests
+// may read the same count before any write lands. This is a soft limit; a burst
+// could exceed RATE_LIMIT_PER_HOUR by a small factor. Acceptable for the current
+// scale. For strict enforcement, migrate to Durable Objects or the Rate Limiting binding.
 export async function checkRateLimit(
   request: Request,
   kv: KVNamespace,
 ): Promise<{ allowed: boolean; remaining: number }> {
   const ip = getClientIP(request);
+  if (ip === "unknown") {
+    return { allowed: false, remaining: 0 };
+  }
   const key = getRateLimitKey(ip);
 
   const current = parseInt((await kv.get(key)) ?? "0", 10);

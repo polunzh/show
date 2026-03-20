@@ -15,12 +15,18 @@ export function slugify(name: string): string {
 
 export function generateDeploymentId(slug: string): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  const bytes = new Uint8Array(ID_LENGTH);
-  crypto.getRandomValues(bytes);
+  // 252 is the largest multiple of 36 below 256 — reject bytes >= 252 to avoid modulo bias
+  const maxValid = 252;
 
   let randomId = "";
-  for (let i = 0; i < ID_LENGTH; i++) {
-    randomId += chars[bytes[i] % chars.length];
+  while (randomId.length < ID_LENGTH) {
+    const bytes = new Uint8Array(ID_LENGTH * 2);
+    crypto.getRandomValues(bytes);
+    for (let i = 0; i < bytes.length && randomId.length < ID_LENGTH; i++) {
+      if (bytes[i] < maxValid) {
+        randomId += chars[bytes[i] % chars.length];
+      }
+    }
   }
 
   return `${randomId}-${slug}`;

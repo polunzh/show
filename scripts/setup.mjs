@@ -88,7 +88,10 @@ async function main() {
 
   // 8. Set secret
   console.log("Setting deploy token secret...");
-  run(`echo "${deployToken}" | wrangler secret put DEPLOY_TOKEN --config "${WRANGLER_TOML}"`);
+  execSync(`wrangler secret put DEPLOY_TOKEN --config "${WRANGLER_TOML}"`, {
+    input: deployToken + "\n",
+    stdio: ["pipe", "inherit", "inherit"],
+  });
 
   // 9. Configure route
   console.log(`\nDNS Setup Required:`);

@@ -7,7 +7,13 @@ export async function getMetadata(
 ): Promise<DeploymentMetadata | null> {
   const raw = await kv.get(deploymentId);
   if (!raw) return null;
-  return JSON.parse(raw) as DeploymentMetadata;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || !parsed.deploymentId) return null;
+    return parsed as DeploymentMetadata;
+  } catch {
+    return null;
+  }
 }
 
 export async function putMetadata(kv: KVNamespace, meta: DeploymentMetadata): Promise<void> {
@@ -23,8 +29,8 @@ export async function* listDeployments(kv: KVNamespace): AsyncGenerator<Deployme
   do {
     const result = await kv.list({ cursor });
     for (const key of result.keys) {
-      // Skip internal keys
-      if (key.name.startsWith("_")) continue;
+      // Skip non-deployment keys (rate limit entries, internal keys)
+      if (key.name.startsWith("_") || key.name.startsWith("ratelimit:")) continue;
       const meta = await getMetadata(kv, key.name);
       if (meta) yield meta;
     }

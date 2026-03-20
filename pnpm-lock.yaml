@@ -15,9 +15,6 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20260317.1
         version: 4.20260317.1
-      '@mjackson/multipart-parser':
-        specifier: ^0.10.1
-        version: 0.10.1
       fflate:
         specifier: ^0.8.2
         version: 0.8.2
@@ -35,12 +32,6 @@ packages:
 
   '@cloudflare/workers-types@4.20260317.1':
     resolution: {integrity: sha512-+G4eVwyCpm8Au1ex8vQBCuA9wnwqetz4tPNRoB/53qvktERWBRMQnrtvC1k584yRE3emMThtuY0gWshvSJ++PQ==}
-
-  '@mjackson/headers@0.11.1':
-    resolution: {integrity: sha512-uXXhd4rtDdDwkqAuGef1nuafkCa1NlTmEc1Jzc0NL4YiA1yON1NFXuqJ3hOuKvNKQwkiDwdD+JJlKVyz4dunFA==}
-
-  '@mjackson/multipart-parser@0.10.1':
-    resolution: {integrity: sha512-cHMD6+ErH/DrEfC0N6Ru/+1eAdavxdV0C35PzSb5/SD7z3XoaDMc16xPJcb8CahWjSpqHY+Too9sAb6/UNuq7A==}
 
   '@oxc-project/runtime@0.115.0':
     resolution: {integrity: sha512-Rg8Wlt5dCbXhQnsXPrkOjL1DTSvXLgb2R/KYfnf1/K+R0k6UMLEmbQXPM+kwrWqSmWA2t0B1EtHy2/3zikQpvQ==}
@@ -693,12 +684,6 @@ packages:
 snapshots:
 
   '@cloudflare/workers-types@4.20260317.1': {}
-
-  '@mjackson/headers@0.11.1': {}
-
-  '@mjackson/multipart-parser@0.10.1':
-    dependencies:
-      '@mjackson/headers': 0.11.1
 
   '@oxc-project/runtime@0.115.0': {}
 

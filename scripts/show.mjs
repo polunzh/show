@@ -52,7 +52,7 @@ function saveHistory(entries) {
 function appendHistory(entry) {
   const history = loadHistory();
   history.push(entry);
-  saveHistory(history);
+  saveHistory(history.slice(-100));
 }
 
 // --- Arg parsing ---
@@ -134,7 +134,13 @@ async function deploy(args) {
       body: formData,
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      console.error(`Error: Server returned status ${response.status}`);
+      process.exit(1);
+    }
 
     if (!response.ok) {
       if (jsonOutput) {
@@ -254,7 +260,13 @@ async function inspect(args) {
     headers,
   });
 
-  const result = await response.json();
+  let result;
+  try {
+    result = await response.json();
+  } catch {
+    console.error(`Error: Server returned status ${response.status}`);
+    process.exit(1);
+  }
 
   if (!response.ok) {
     if (jsonOutput) {

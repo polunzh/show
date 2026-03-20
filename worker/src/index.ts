@@ -19,10 +19,12 @@ export default {
     const url = new URL(request.url);
     const host = url.hostname;
     const path = url.pathname;
+    const method = request.method;
+    const isGetOrHead = method === "GET" || method === "HEAD";
 
     try {
       // POST /upload — open endpoint, rate limited by IP
-      if (request.method === "POST" && path === "/upload") {
+      if (method === "POST" && path === "/upload") {
         const { allowed } = await checkRateLimit(request, env.SHOW_META);
         if (!allowed) {
           return rateLimitedResponse(requestId);
@@ -32,24 +34,26 @@ export default {
 
       // GET /_admin/deployments/:id — protected inspect endpoint
       const adminMatch = path.match(/^\/_admin\/deployments\/([^/]+)$/);
-      if (request.method === "GET" && adminMatch) {
-        if (hasToken(env) && !validateToken(request, env)) {
+      if (method === "GET" && adminMatch) {
+        if (hasToken(env) && !(await validateToken(request, env))) {
           return unauthorizedResponse(requestId);
         }
         return await handleInspect(env, requestId, adminMatch[1]);
       }
 
-      // GET /* on homepage host — serve landing page
-      if (request.method === "GET" && env.HOMEPAGE_HOST && host === env.HOMEPAGE_HOST) {
-        return await handleHomepage(request, env);
+      // GET|HEAD /* on homepage host — serve landing page
+      if (isGetOrHead && env.HOMEPAGE_HOST && host === env.HOMEPAGE_HOST) {
+        const response = await handleHomepage(request, env);
+        return method === "HEAD" ? new Response(null, response) : response;
       }
 
-      // GET /* on subdomain — serve deployment files
+      // GET|HEAD /* on subdomain — serve deployment files
       const baseDomain = env.BASE_DOMAIN;
-      if (request.method === "GET" && host.endsWith(`.${baseDomain}`)) {
+      if (isGetOrHead && host.endsWith(`.${baseDomain}`)) {
         const deploymentId = host.slice(0, -(baseDomain.length + 1));
-        if (deploymentId) {
-          return await handleServe(request, env, requestId, deploymentId);
+        if (deploymentId && /^[a-z0-9-]+$/.test(deploymentId)) {
+          const response = await handleServe(request, env, requestId, deploymentId);
+          return method === "HEAD" ? new Response(null, response) : response;
         }
       }
 

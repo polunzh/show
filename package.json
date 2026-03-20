@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260317.1",
-    "@mjackson/multipart-parser": "^0.10.1",
     "fflate": "^0.8.2",
     "typescript": "~5.9.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",

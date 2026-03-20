@@ -6,17 +6,13 @@ import {
   MAX_UPLOAD_SIZE,
   DEPLOYMENT_TTL_MS,
   R2_CONCURRENCY,
+  getExtension,
 } from "./constants.ts";
 import { log } from "./logging.ts";
 import { putMetadata } from "./metadata.ts";
 import { slugify, generateDeploymentId } from "./slug.ts";
 import { parseTar } from "./tar.ts";
 import type { Env, DeploymentMode, DeploymentMetadata } from "./types.ts";
-
-function getExtension(filename: string): string {
-  const dot = filename.lastIndexOf(".");
-  return dot >= 0 ? filename.slice(dot).toLowerCase() : "";
-}
 
 function errorResponse(status: number, code: string, message: string, requestId: string): Response {
   return Response.json({ error: code, message, requestId }, { status });
@@ -121,15 +117,15 @@ export async function handleUpload(
 
   const disallowedFiles: string[] = [];
   for (const entry of entries) {
-    // Path traversal check
-    if (entry.name.includes("..")) {
+    // Path traversal and malicious name checks
+    if (
+      entry.name.includes("..") ||
+      entry.name.includes("\\") ||
+      entry.name.includes("\0") ||
+      entry.name.startsWith("/")
+    ) {
       log("upload_rejected", { requestId, reason: "path_traversal", file: entry.name });
-      return errorResponse(
-        400,
-        "PATH_TRAVERSAL",
-        `Path traversal detected: ${entry.name}`,
-        requestId,
-      );
+      return errorResponse(400, "PATH_TRAVERSAL", "Invalid file path detected", requestId);
     }
 
     // File type check — extensionless files are allowed

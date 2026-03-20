@@ -34,6 +34,11 @@ export const ALLOWED_EXTENSIONS = new Set([
   ".webmanifest",
 ]);
 
+export function getExtension(path: string): string {
+  const dot = path.lastIndexOf(".");
+  return dot >= 0 ? path.slice(dot).toLowerCase() : "";
+}
+
 export const MIME_TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
