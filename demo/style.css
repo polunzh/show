@@ -482,6 +482,46 @@ code {
   color: var(--accent-light);
 }
 
+.install-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.install-tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+  min-height: 44px;
+}
+
+.install-tab:hover {
+  color: var(--text-secondary);
+}
+
+.install-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.install-panel {
+  display: none;
+}
+
+.install-panel.active {
+  display: block;
+}
+
 .code-block {
   display: flex;
   flex-direction: column;

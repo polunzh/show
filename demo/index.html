@@ -184,47 +184,105 @@
         <div class="step">
           <div class="step-header">
             <span class="step-num">1</span>
-            <h3>Add the skill</h3>
+            <h3>Install the skill</h3>
           </div>
           <p class="step-desc">
-            Download
+            A skill is a markdown file that teaches your AI Agent how to use Show. Download
             <a
               href="https://github.com/polunzh/show/blob/master/skills/show-deploy.md"
               target="_blank"
               rel="noopener noreferrer"
               >show-deploy.md</a
             >
-            into your agent's skills directory, and set two environment variables.
+            into your agent's skills folder, then set two environment variables.
           </p>
-          <div class="code-block">
-            <code><span class="t-dim"># Claude Code example</span></code>
-            <div class="code-copy">
-              <code
-                >mkdir -p .claude/skills && curl -sL
-                https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o
-                .claude/skills/show-deploy.md</code
-              >
-              <button
-                class="code-copy-btn"
-                aria-label="Copy"
-                data-copy="mkdir -p .claude/skills && curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o .claude/skills/show-deploy.md"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+
+          <div class="install-tabs">
+            <button class="install-tab active" data-target="tab-claude-code">Claude Code</button>
+            <button class="install-tab" data-target="tab-codex">Codex</button>
+            <button class="install-tab" data-target="tab-other">Other Agents</button>
+          </div>
+
+          <div id="tab-claude-code" class="install-panel active">
+            <div class="code-block">
+              <div class="code-copy">
+                <code
+                  >mkdir -p .claude/skills && curl -sL
+                  https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o
+                  .claude/skills/show-deploy.md</code
                 >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
+                <button
+                  class="code-copy-btn"
+                  aria-label="Copy"
+                  data-copy="mkdir -p .claude/skills && curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o .claude/skills/show-deploy.md"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
             </div>
-            <code><span class="t-dim"># Set credentials (add to your shell profile)</span></code>
+          </div>
+
+          <div id="tab-codex" class="install-panel">
+            <div class="code-block">
+              <div class="code-copy">
+                <code
+                  >mkdir -p codex/skills && curl -sL
+                  https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o
+                  codex/skills/show-deploy.md</code
+                >
+                <button
+                  class="code-copy-btn"
+                  aria-label="Copy"
+                  data-copy="mkdir -p codex/skills && curl -sL https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md -o codex/skills/show-deploy.md"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-other" class="install-panel">
+            <p class="step-desc" style="margin-bottom: 0">
+              Download
+              <a
+                href="https://raw.githubusercontent.com/polunzh/show/master/skills/show-deploy.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                >show-deploy.md</a
+              >
+              and place it wherever your agent reads skill/prompt files. The file is self-contained
+              — it tells the agent exactly what to do.
+            </p>
+          </div>
+
+          <div class="code-block" style="margin-top: 1rem">
+            <code
+              ><span class="t-dim"># Then set credentials (add to your shell profile)</span></code
+            >
             <div class="code-copy">
               <code>export SHOW_API_URL=https://your-instance.workers.dev</code>
               <button
@@ -356,6 +414,20 @@
         const expanded = this.getAttribute("aria-expanded") === "true";
         this.setAttribute("aria-expanded", !expanded);
         links.classList.toggle("nav-open");
+      });
+
+      document.querySelectorAll(".install-tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var parent = this.closest(".step");
+          parent.querySelectorAll(".install-tab").forEach(function (t) {
+            t.classList.remove("active");
+          });
+          parent.querySelectorAll(".install-panel").forEach(function (p) {
+            p.classList.remove("active");
+          });
+          this.classList.add("active");
+          document.getElementById(this.getAttribute("data-target")).classList.add("active");
+        });
       });
 
       document.querySelectorAll(".code-copy-btn").forEach(function (btn) {
